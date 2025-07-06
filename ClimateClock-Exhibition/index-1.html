@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+   .container {
+     display: flex;
+     height: 100vh;
+   }
+   .climate-clock, .video {
+     flex: 1;
+   }
+   /* 移动端适配 */
+   @media (max-width: 768px) {
+     .container { flex-direction: column; }
+   }
+</style>
+</head>
+<body>
+<div class="container">
+<!-- 气候时钟（官方组件） -->
+<div class="climate-clock">
+<script src="https://climateclock.world/widget-v2.js" async></script>
+<climate-clock />
+</div>
+<!-- 影片播放器（使用Google Drive直链） -->
+<div class="video">
+<video controls width="100%">
+<source src="https://drive.google.com/uc?export=download&id=[你的影片ID]" type="video/mp4">
+</video>
+</div>
+</div>
+</body>
+</html>

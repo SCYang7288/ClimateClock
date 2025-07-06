@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>气候时钟展览 - 带滴答声效果</title>
+  <script src="https://climateclock.world/widget-v2.js" async></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    :root {
+      --primary-bg: #0a1929;
+      --clock-color: #ff6b6b;
+      --accent-color: #4ecdc4;
+      --card-bg: rgba(78, 205, 196, 0.15);
+      --text-color: #ffffff;
+      --highlight: #ffd166;
+      --tick-color: #4ecdc4;
+    }
+    
+    body {
+      font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--primary-bg);
+      color: var(--text-color);
+      min-height: 100vh;
+      padding: 20px;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(78, 205, 196, 0.05) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(255, 107, 107, 0.05) 0%, transparent 20%);
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    
+    header {
+      text-align: center;
+      margin-bottom: 25px;
+      padding: 15px;
+    }
+    
+    h1 {
+      font-size: 2.2rem;
+      color: var(--accent-color);
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(78, 205, 196, 0.4);
+    }
+    
+    .subtitle {
+      font-size: 1.1rem;
+      opacity: 0.85;
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    
+    /* 时间显示区 */
+    .clock-section {
+      background: rgba(10, 25, 41, 0.85);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    /* 修复时钟显示 */
+    climate-clock {
+      display: block !important;
+      width: 100% !important;
+      text-align: center !important;
+    }
+    
+    climate-clock .deadline {
+      font-size: 3.5rem !important;
+      font-weight: 800 !important;
+      color: var(--clock-color) !important;
+      letter-spacing: 3px !important;
+      text-shadow: 0 0 20px rgba(255, 107, 107, 0.8) !important;
+      font-family: 'Courier New', monospace !important;
+      margin: 15px 0 !important;
+      line-height: 1.2 !important;
+      padding: 0 10px !important;
+    }
+    
+    climate-clock .label {
+      opacity: 0.8;
+      font-size: 1.2rem;
+      text-align: center;
+      margin-top: 15px;
+    }
+    
+    .info-text {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 1.1rem;
+      opacity: 0.85;
+      line-height: 1.5;
+      max-width: 800px;
+      margin: 20px auto 0;
+    }
+    
+    /* 影片播放区 */
+    .video-section {
+      position: relative;
+      background: #000;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      aspect-ratio: 16/9;
+      max-height: 70vh;
+    }
+    
+    #climate-video {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    
+    /* 互动控制区 */
+    .interaction-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+    
+    @media (max-width: 768px) {
+      .interaction-section {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .data-section, .control-section {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 18px;
+      padding: 25px;
+      position: relative;
+      backdrop-filter: blur(5px);
+    }
+    
+    .section-title {
+      text-align: center;
+      margin-bottom: 25px;
+      font-size: 1.5rem;
+      color: var(--accent-color);
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 15px;
+    }
+    
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background: var(--accent-color);
+      margin: 10px auto 0;
+      border-radius: 3px;
+    }
+    
+    .data-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    @media (max-width: 480px) {
+      .data-panel {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .data-card {
+      background: var(--card-bg);
+      border-radius: 15px;
+      padding: 25px 20px;
+      text-align: center;
+      transition: all 0.4s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+    
+    .data-card:hover {
+      transform: translateY(-8px);
+      background: rgba(78, 205, 196, 0.25);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.35);
+    }
+    
+    .data-value {
+      font-size: 2.2rem;
+      font-weight: bold;
+      margin-bottom: 12px;
+      font-family: 'Courier New', monospace;
+      color: var(--accent-color);
+    }
+    
+    .data-label {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      line-height: 1.4;
+    }
+    
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      margin-top: 20px;
+    }
+    
+    .action-btn {
+      background: var(--accent-color);
+      border: none;
+      border-radius: 50px;
+      padding: 18px;
+      color: var(--primary-bg);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      box-shadow: 0 8px 20px rgba(78, 205, 196, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      font-size: 1.2rem;
+    }
+    
+    .action-btn i {
+      font-size: 1.4rem;
+    }
+    
+    .action-btn:active {
+      transform: scale(0.97);
+      background: #3db3aa;
+    }
+    
+    .update-info {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 1rem;
+      opacity: 0.8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .update-time {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+      padding: 8px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
+      font-size: 1.1rem;
+    }
+    
+    /* 声音控制 */
+    .sound-control {
+      position: absolute;
+      top: 25px;
+      right: 25px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 20;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      transition: all 0.4s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .sound-control:hover {
+      background: rgba(78, 205, 196, 0.4);
+      transform: scale(1.1);
+    }
+    
+    .sound-control i {
+      font-size: 1.6rem;
+      color: var(--accent-color);
+    }
+    
+    /* 滴答动画效果 */
+    .tick-animation {
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background: var(--tick-color);
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0.8;
+      animation: tickEffect 1.2s forwards;
+      box-shadow: 0 0 15px var(--tick-color);
+      z-index: 5;
+    }
+    
+    @keyframes tickEffect {
+      0% {
+        transform: scale(0.5);
+        opacity: 0.8;
+      }
+      50% {
+        opacity: 0.6;
+      }
+      100% {
+        transform: scale(3);
+        opacity: 0;
+      }
+    }
+    
+    footer {
+      text-align: center;
+      padding: 25px;
+      margin-top: 30px;
+      font-size: 0.95rem;
+      opacity: 0.7;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    /* 动画效果 */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+    
+    .pulse {
+      animation: pulse 3s infinite ease-in-out;
+    }
+    
+    /* 装饰元素 */
+    .decoration {
+      position: fixed;
+      z-index: 0;
+    }
+    
+    .decoration.circle {
+      width: 200px;
+      height: 200px;
+      border: 3px solid rgba(78, 205, 196, 0.15);
+      border-radius: 50%;
+      top: 10%;
+      right: 5%;
+    }
+    
+    .decoration.triangle {
+      width: 0;
+      height: 0;
+      border-left: 60px solid transparent;
+      border-right: 60px solid transparent;
+      border-bottom: 100px solid rgba(255, 107, 107, 0.1);
+      bottom: 15%;
+      left: 5%;
+      transform: rotate(25deg);
+    }
+    
+    .decoration.square {
+      width: 120px;
+      height: 120px;
+      border: 2px solid rgba(255, 213, 102, 0.1);
+      transform: rotate(15deg);
+      top: 20%;
+      left: 8%;
+    }
+  </style>
+</head>
+<body>
+  <!-- 装饰元素 -->
+  <div class="decoration circle"></div>
+  <div class="decoration triangle"></div>
+  <div class="decoration square"></div>
+  
+  <header>
+    <h1><i class="fas fa-clock"></i> 气候时钟展览</h1>
+    <p class="subtitle">倒计时显示我们为将全球升温控制在1.5°C以内所剩的时间 - 每一秒都至关重要</p>
+  </header>
+  
+  <div class="container">
+    <!-- 时间显示区 -->
+    <section class="clock-section">
+      <!-- 声音控制按钮 -->
+      <div class="sound-control" id="sound-toggle">
+        <i class="fas fa-volume-up"></i>
+      </div>
+      
+      <climate-clock></climate-clock>
+      <p class="info-text">这个时钟基于最新的气候科学数据，显示我们为避免灾难性气候变化还能排放的二氧化碳量。当计时器归零时，我们将失去将全球变暖控制在1.5°C以内的机会。</p>
+    </section>
+    
+    <!-- 影片播放区 -->
+    <section class="video-section">
+      <iframe id="climate-video" 
+              src="https://www.youtube.com/embed/jAa58N4Jlos?enablejsapi=1&autoplay=1&mute=1&playsinline=1&rel=0" 
+              frameborder="0" 
+              allowfullscreen
+              allow="accelerometer; autoplay; encrypted-media; gyroscope">
+      </iframe>
+    </section>
+    
+    <!-- 互动区域 -->
+    <section class="interaction-section">
+      <div class="data-section">
+        <h2 class="section-title">气候数据指标</h2>
+        
+        <div class="data-panel">
+          <div class="data-card pulse">
+            <div id="renewable" class="data-value">14.3%</div>
+            <div class="data-label">全球可再生能源使用率</div>
+          </div>
+          <div class="data-card pulse">
+            <div id="carbon-budget" class="data-value">58.2%</div>
+            <div class="data-label">剩余碳预算</div>
+          </div>
+          <div class="data-card pulse">
+            <div class="data-value">1.45°C</div>
+            <div class="data-label">当前全球升温</div>
+          </div>
+          <div class="data-card pulse">
+            <div class="data-value">2030</div>
+            <div class="data-label">关键减排目标年</div>
+          </div>
+        </div>
+        
+        <div class="update-info">
+          <div class="update-time">
+            <i class="far fa-clock"></i>
+            <span id="update-time">数据最后更新于 2025年7月5日 15:30</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="control-section">
+        <h2 class="section-title">互动控制</h2>
+        
+        <div class="action-buttons">
+          <button class="action-btn" data-chapter="crisis">
+            <i class="fas fa-fire"></i> 气候危机部分
+          </button>
+          <button class="action-btn" data-chapter="solutions">
+            <i class="fas fa-lightbulb"></i> 解决方案部分
+          </button>
+          <button class="action-btn" id="refresh-btn">
+            <i class="fas fa-sync-alt"></i> 刷新气候数据
+          </button>
+          <button class="action-btn" id="info-btn">
+            <i class="fas fa-info-circle"></i> 了解更多信息
+          </button>
+        </div>
+        
+        <div class="sound-info" style="margin-top: 25px; text-align: center; opacity: 0.8;">
+          <p><i class="fas fa-volume-up"></i> 滴答声效果: <span id="sound-status">已启用</span></p>
+          <p style="font-size: 0.9rem; margin-top: 8px;">每秒的滴答声提醒我们时间正在流逝</p>
+        </div>
+      </div>
+    </section>
+  </div>
+  
+  <footer>
+    <p>气候时钟展览 | 数据来源: ClimateClock World & IPCC | 设计用于提高气候危机意识</p>
+    <p>© 2025 气候行动倡议组织 | 每一秒都至关重要</p>
+  </footer>
+  
+  <!-- 滴答声效 -->
+  <audio id="tick-sound" preload="auto">
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-clock-timer-1045.mp3" type="audio/mpeg">
+  </audio>
+  
+  <script>
+    // 设置更新时间
+    function setUpdateTime() {
+      const now = new Date();
+      const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      };
+      document.getElementById('update-time').textContent = 
+        `数据最后更新于 ${now.toLocaleDateString('zh-HK', options)}`;
+    }
+    
+    // 影片章节控制
+    function setupVideoControls() {
+      const buttons = document.querySelectorAll('.action-btn[data-chapter]');
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const chapter = btn.dataset.chapter;
+          seekToChapter(chapter);
+          
+          // 添加视觉反馈
+          btn.style.backgroundColor = 'var(--highlight)';
+          btn.style.color = 'var(--primary-bg)';
+          setTimeout(() => {
+            btn.style.backgroundColor = '';
+            btn.style.color = '';
+          }, 1000);
+        });
+      });
+    }
+    
+    // 章节跳转函数
+    function seekToChapter(chapter) {
+      const player = document.getElementById('climate-video');
+      const chapters = {
+        'crisis': 30,     // 30秒处开始危机章节
+        'solutions': 240  // 4分钟处解决方案
+      };
+      
+      if (player && player.contentWindow) {
+        player.contentWindow.postMessage(JSON.stringify({
+          event: 'command',
+          func: 'seekTo',
+          args: [chapters[chapter], true]
+        }), '*');
+      }
+    }
+    
+    // 刷新按钮功能
+    document.getElementById('refresh-btn').addEventListener('click', function() {
+      this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 刷新中...';
+      this.disabled = true;
+      
+      // 添加简单的刷新动画效果
+      this.style.backgroundColor = 'var(--highlight)';
+      
+      setTimeout(() => {
+        this.innerHTML = '<i class="fas fa-sync-alt"></i> 刷新气候数据';
+        this.style.backgroundColor = '';
+        this.disabled = false;
+        setUpdateTime();
+        
+        // 添加脉冲动画
+        document.querySelectorAll('.data-card').forEach(card => {
+          card.classList.remove('pulse');
+          void card.offsetWidth; // 触发重绘
+          card.classList.add('pulse');
+        });
+      }, 2000);
+    });
+    
+    // 信息按钮
+    document.getElementById('info-btn').addEventListener('click', function() {
+      alert("气候时钟基于最新的气候科学研究，显示我们为避免全球升温超过1.5°C所能排放的剩余二氧化碳量。这个临界点被认为是避免气候变化最灾难性影响的最后防线。");
+    });
+    
+    // 初始化YouTube播放器
+    function initYouTubePlayer() {
+      // iOS需要用户交互后才能播放
+      document.body.addEventListener('touchstart', function initPlay() {
+        const player = document.getElementById('climate-video');
+        if (player && player.contentWindow) {
+          player.contentWindow.postMessage(JSON.stringify({
+            event: 'command',
+            func: 'playVideo'
+          }), '*');
+        }
+      }, { once: true });
+    }
+    
+    // 修复时钟显示函数
+    function fixClockDisplay() {
+      const clockElement = document.querySelector('climate-clock');
+      if (clockElement) {
+        // 添加关键样式确保正确显示
+        clockElement.style.display = 'block';
+        clockElement.style.width = '100%';
+        clockElement.style.textAlign = 'center';
+        
+        // 确保内部元素正确显示
+        const deadline = clockElement.querySelector('.deadline');
+        if (deadline) {
+          deadline.style.fontSize = '3.5rem';
+          deadline.style.lineHeight = '1.2';
+          deadline.style.padding = '0 10px';
+        }
+      }
+    }
+    
+    // 声音控制功能
+    function setupSoundControl() {
+      const soundToggle = document.getElementById('sound-toggle');
+      const soundStatus = document.getElementById('sound-status');
+      const tickSound = document.getElementById('tick-sound');
+      let soundEnabled = true;
+      
+      // 初始音量设置
+      tickSound.volume = 0.3;
+      
+      soundToggle.addEventListener('click', function() {
+        soundEnabled = !soundEnabled;
+        
+        if (soundEnabled) {
+          this.innerHTML = '<i class="fas fa-volume-up"></i>';
+          soundStatus.textContent = '已启用';
+          tickSound.volume = 0.3;
+        } else {
+          this.innerHTML = '<i class="fas fa-volume-mute"></i>';
+          soundStatus.textContent = '已禁用';
+          tickSound.volume = 0;
+        }
+      });
+    }
+    
+    // 创建滴答声效果
+    function createTickEffect() {
+      const clockSection = document.querySelector('.clock-section');
+      const tickSound = document.getElementById('tick-sound');
+      
+      // 创建视觉滴答效果
+      const tick = document.createElement('div');
+      tick.className = 'tick-animation';
+      
+      // 在时钟周围随机位置
+      const rect = clockSection.getBoundingClientRect();
+      const x = rect.left + 20 + Math.random() * (rect.width - 40);
+      const y = rect.top + 20 + Math.random() * (rect.height - 40);
+      
+      tick.style.left = `${x}px`;
+      tick.style.top = `${y}px`;
+      
+      document.body.appendChild(tick);
+      
+      // 播放滴答声
+      if (tickSound.volume > 0) {
+        tickSound.currentTime = 0;
+        tickSound.play().catch(e => console.log('声音播放失败:', e));
+      }
+      
+      // 移除动画元素
+      setTimeout(() => {
+        tick.remove();
+      }, 1200);
+    }
+    
+    // 初始化应用
+    document.addEventListener('DOMContentLoaded', () => {
+      // 设置更新时间
+      setUpdateTime();
+      
+      // 设置控制按钮
+      setupVideoControls();
+      
+      // 修复时钟显示
+      fixClockDisplay();
+      
+      // 设置声音控制
+      setupSoundControl();
+      
+      // 每10分钟更新时间戳
+      setInterval(setUpdateTime, 600000);
+      
+      // 添加时钟动画和滴答声
+      let lastSecond = new Date().getSeconds();
+      setInterval(() => {
+        // 添加时钟动画
+        const deadline = document.querySelector('climate-clock .deadline');
+        if (deadline) {
+          deadline.style.textShadow = '0 0 25px rgba(255, 107, 107, 0.9)';
+          setTimeout(() => {
+            deadline.style.textShadow = '0 0 15px rgba(255, 107, 107, 0.6)';
+          }, 800);
+        }
+        
+        // 每秒创建一次滴答效果
+        const now = new Date();
+        if (now.getSeconds() !== lastSecond) {
+          lastSecond = now.getSeconds();
+          createTickEffect();
+        }
+      }, 100);
+    });
+    
+    // 监听窗口大小变化，重新修复时钟
+    window.addEventListener('resize', fixClockDisplay);
+  </script>
+</body>
+</html>

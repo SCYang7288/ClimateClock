@@ -1,0 +1,12 @@
+{
+  "data": {
+    "modules": {
+      "deadline": {
+        "time": "4 11 24 16"
+      },
+      "renewable": {
+        "percentage": 14.3
+      }
+    }
+  }
+}

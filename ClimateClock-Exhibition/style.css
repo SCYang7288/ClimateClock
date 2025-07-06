@@ -1,0 +1,172 @@
+/* 三屏式布局 */
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #0a1929;
+  color: white;
+  overflow: hidden;
+}
+
+/* 时间显示区 (20%高度) */
+.clock-section {
+  height: 20vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+#deadline {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #ff6b6b;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  text-shadow: 0 0 10px rgba(255,107,107,0.5);
+  font-family: 'Courier New', monospace;
+}
+
+.clock-label {
+  opacity: 0.8;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* 影片播放区 (50%高度) */
+.video-section {
+  height: 50vh;
+  position: relative;
+  background: #000;
+}
+
+#climate-video {
+  width: 100%;
+  height: 100%;
+}
+
+/* 互动控制区 (30%高度) */
+.interaction-section {
+  height: 30vh;
+  padding: 15px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.data-panel {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.data-card {
+  background: rgba(78,205,196,0.15);
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+}
+
+.data-value {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-family: 'Courier New', monospace;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  background: #4ecdc4;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 25px;
+  color: #0a1929;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+  background: #3db3aa;
+}
+
+.update-time {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+/* 横屏适配 */
+@media (orientation: landscape) {
+  body {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .clock-section {
+    width: 100%;
+    height: 15vh;
+  }
+  .video-section {
+    width: 70%;
+    height: 85vh;
+  }
+  .interaction-section {
+    width: 30%;
+    height: 85vh;
+  }
+}
+
+/* 加载指示器 */
+.loader {
+  display: none;
+  text-align: center;
+  padding: 10px;
+}
+
+.error-message {
+  display: none;
+  color: #ff6b6b;
+  text-align: center;
+  padding: 10px;
+}
+
+.tick-animation {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: var(--tick-color);
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.8;
+  animation: tickEffect 1.2s forwards;
+  box-shadow: 0 0 15px var(--tick-color);
+  z-index: 5;
+}
+
+@keyframes tickEffect {
+  0% {
+    transform: scale(0.5);
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}

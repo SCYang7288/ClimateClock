@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>气候行动时钟展览</title>
+  <script src="https://climateclock.world/widget-v2.js" async></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a1929;
+      color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      padding: 10px;
+    }
+    
+    /* 时间显示区 (20%高度) */
+    .clock-section {
+      height: 20vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      position: relative;
+    }
+    
+    /* 自定义官方时钟组件样式 */
+    climate-clock {
+      display: block;
+      text-align: center;
+    }
+    
+    /* 覆盖官方组件的默认样式 */
+    climate-clock .deadline {
+      font-size: 2.5rem !important;
+      font-weight: 800 !important;
+      color: #ff6b6b !important;
+      letter-spacing: 2px !important;
+      text-shadow: 0 0 10px rgba(255, 107, 107, 0.5) !important;
+      font-family: 'Courier New', monospace !important;
+      margin-bottom: 8px !important;
+    }
+    
+    climate-clock .label {
+      opacity: 0.8;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+    
+    /* 影片播放区 (50%高度) */
+    .video-section {
+      height: 50vh;
+      position: relative;
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 10px 0;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+    
+    #climate-video {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    
+    /* 互动控制区 (30%高度) */
+    .interaction-section {
+      height: 30vh;
+      padding: 15px;
+      overflow-y: auto;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+    }
+    
+    .data-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .data-card {
+      background: rgba(78, 205, 196, 0.15);
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      transition: transform 0.3s;
+    }
+    
+    .data-card:hover {
+      transform: translateY(-3px);
+      background: rgba(78, 205, 196, 0.25);
+    }
+    
+    .data-value {
+      font-size: 1.6rem;
+      font-weight: bold;
+      margin-bottom: 5px;
+      font-family: 'Courier New', monospace;
+      color: #4ecdc4;
+    }
+    
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    
+    .action-btn {
+      background: #4ecdc4;
+      border: none;
+      border-radius: 25px;
+      padding: 12px 25px;
+      color: #0a1929;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      min-width: 140px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .action-btn:active {
+      transform: scale(0.95);
+      background: #3db3aa;
+    }
+    
+    .update-time {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+    
+    .info-text {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 0.85rem;
+      opacity: 0.8;
+      line-height: 1.4;
+    }
+    
+    /* 横屏适配 */
+    @media (orientation: landscape) {
+      body {
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 15px;
+      }
+      .clock-section {
+        width: 100%;
+        height: 18vh;
+      }
+      .video-section {
+        width: 70%;
+        height: 76vh;
+        margin: 0 10px 0 0;
+      }
+      .interaction-section {
+        width: calc(30% - 10px);
+        height: 76vh;
+      }
+    }
+    
+    /* 加载指示器 */
+    .loader {
+      display: none;
+      text-align: center;
+      padding: 10px;
+      color: #4ecdc4;
+    }
+    
+    .error-message {
+      display: none;
+      color: #ff6b6b;
+      text-align: center;
+      padding: 10px;
+    }
+    
+    /* 标题样式 */
+    .section-title {
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+      color: #4ecdc4;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 上端：时间显示 - 使用官方Climate Clock组件 -->
+  <section class="clock-section">
+    <climate-clock></climate-clock>
+    <div class="info-text">全球升温控制在1.5°C以内的剩余时间</div>
+  </section>
+  
+  <!-- 中间：影片播放 -->
+  <section class="video-section">
+    <iframe id="climate-video" 
+            src="https://www.youtube.com/embed/jAa58N4Jlos?enablejsapi=1&autoplay=1&mute=1&playsinline=1" 
+            frameborder="0" 
+            allowfullscreen
+            allow="accelerometer; autoplay; encrypted-media; gyroscope">
+    </iframe>
+  </section>
+  
+  <!-- 下端：互动区域 -->
+  <section class="interaction-section">
+    <div class="section-title">气候行动数据</div>
+    
+    <div class="data-panel">
+      <div class="data-card">
+        <div id="renewable" class="data-value">14.3%</div>
+        <div>全球可再生能源使用率</div>
+      </div>
+      <div class="data-card">
+        <div id="carbon-budget" class="data-value">58.2%</div>
+        <div>剩余碳预算</div>
+      </div>
+    </div>
+    
+    <div class="section-title">视频控制</div>
+    <div class="action-buttons">
+      <button class="action-btn" data-chapter="crisis">气候危机</button>
+      <button class="action-btn" data-chapter="solutions">解决方案</button>
+      <button class="action-btn" id="refresh-btn">刷新信息</button>
+    </div>
+    
+    <div class="update-time">
+      <small>数据最后更新: <span id="update-time">2025年7月5日</span></small>
+    </div>
+  </section>
+  
+  <script>
+    // 设置更新时间
+    function setUpdateTime() {
+      const now = new Date();
+      const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      };
+      document.getElementById('update-time').textContent = 
+        now.toLocaleDateString('zh-HK', options);
+    }
+    
+    // 影片章节控制
+    function setupVideoControls() {
+      const buttons = document.querySelectorAll('.action-btn[data-chapter]');
+      buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const chapter = btn.dataset.chapter;
+          seekToChapter(chapter);
+          
+          // 添加视觉反馈
+          btn.style.backgroundColor = '#ffd166';
+          btn.style.color = '#0a1929';
+          setTimeout(() => {
+            btn.style.backgroundColor = '';
+            btn.style.color = '';
+          }, 1000);
+        });
+      });
+    }
+    
+    // 章节跳转函数
+    function seekToChapter(chapter) {
+      const player = document.getElementById('climate-video');
+      const chapters = {
+        'crisis': 30,     // 30秒处开始危机章节
+        'solutions': 240  // 4分钟处解决方案
+      };
+      
+      if (player && player.contentWindow) {
+        player.contentWindow.postMessage(JSON.stringify({
+          event: 'command',
+          func: 'seekTo',
+          args: [chapters[chapter], true]
+        }), '*');
+      }
+    }
+    
+    // 刷新按钮功能
+    document.getElementById('refresh-btn').addEventListener('click', function() {
+      this.textContent = "刷新中...";
+      
+      // 添加简单的刷新动画效果
+      this.style.backgroundColor = '#ffd166';
+      
+      setTimeout(() => {
+        this.textContent = "刷新信息";
+        this.style.backgroundColor = '';
+        setUpdateTime();
+      }, 1500);
+    });
+    
+    // 初始化YouTube播放器
+    function initYouTubePlayer() {
+      // iOS需要用户交互后才能播放
+      document.body.addEventListener('touchstart', function initPlay() {
+        const player = document.getElementById('climate-video');
+        if (player && player.contentWindow) {
+          player.contentWindow.postMessage(JSON.stringify({
+            event: 'command',
+            func: 'playVideo'
+          }), '*');
+        }
+      }, { once: true });
+    }
+    
+    // 初始化应用
+    document.addEventListener('DOMContentLoaded', () => {
+      // 设置更新时间
+      setUpdateTime();
+      
+      // 设置控制按钮
+      setupVideoControls();
+      
+      // 初始化YouTube播放器
+      initYouTubePlayer();
+      
+      // 每10分钟更新时间戳
+      setInterval(setUpdateTime, 600000);
+      
+      // 添加简单的时钟动画
+      setInterval(() => {
+        const deadline = document.querySelector('climate-clock .deadline');
+        if (deadline) {
+          deadline.style.textShadow = '0 0 15px rgba(255, 107, 107, 0.8)';
+          setTimeout(() => {
+            deadline.style.textShadow = '0 0 10px rgba(255, 107, 107, 0.5)';
+          }, 500);
+        }
+      }, 5000);
+    });
+  </script>
+</body>
+</html>
