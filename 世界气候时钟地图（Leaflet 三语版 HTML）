@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>世界气候时钟地图</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <style>
+        html, body, #map {
+            height: 100%;
+            margin: 0;
+        }
+        .language-switcher {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 9999;
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            font-family: sans-serif;
+        }
+        .language-switcher button {
+            margin: 2px;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<div class="language-switcher">
+    <strong>语言 / Language / Bahasa:</strong><br>
+    <button onclick="switchLanguage('zh')">中文</button>
+    <button onclick="switchLanguage('en')">English</button>
+    <button onclick="switchLanguage('ms')">BM</button>
+</div>
+<script>
+    var map = L.map('map').setView([20, 0], 2);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+    }).addTo(map);
+
+    var language = 'zh';
+
+    var locations = [
+        {
+            name: "纽约",
+            lat: 40.7359,
+            lng: -73.9911,
+            text: {
+                zh: "最著名的气候时钟，于2020年安装。",
+                en: "The most famous Climate Clock, installed in 2020.",
+                ms: "Jam Iklim yang paling terkenal, dipasang pada tahun 2020."
+            }
+        },
+        {
+            name: "柏林",
+            lat: 52.5200,
+            lng: 13.4050,
+            text: {
+                zh: "在全球气候行动周等活动中展示。",
+                en: "Displayed during Global Climate Action Week and similar events.",
+                ms: "Dipamerkan semasa Minggu Tindakan Iklim Global dan acara serupa."
+            }
+        },
+        {
+            name: "首尔",
+            lat: 37.5665,
+            lng: 126.9780,
+            text: {
+                zh: "在世界地球日设置的气候倒数时钟。",
+                en: "Climate countdown clock set up on Earth Day.",
+                ms: "Jam undur iklim yang dipasang sempena Hari Bumi."
+            }
+        },
+        {
+            name: "伦敦",
+            lat: 51.5074,
+            lng: -0.1278,
+            text: {
+                zh: "由Extinction Rebellion等团体设立。",
+                en: "Set up by groups like Extinction Rebellion.",
+                ms: "Dipasang oleh kumpulan seperti Extinction Rebellion."
+            }
+        },
+        {
+            name: "多伦多",
+            lat: 43.651070,
+            lng: -79.347015,
+            text: {
+                zh: "以教育为主的临时气候时钟展示。",
+                en: "Temporary climate clock display for educational purposes.",
+                ms: "Pameran jam iklim sementara untuk tujuan pendidikan."
+            }
+        },
+        {
+            name: "吉隆坡",
+            lat: 3.1390,
+            lng: 101.6869,
+            text: {
+                zh: "潜在展示地点，有机会成为东南亚代表。",
+                en: "Potential display site, could represent Southeast Asia.",
+                ms: "Tapak pameran berpotensi, boleh menjadi wakil Asia Tenggara."
+            }
+        }
+    ];
+
+    var markers = [];
+
+    locations.forEach(function(loc) {
+        var marker = L.marker([loc.lat, loc.lng]).addTo(map);
+        marker.bindPopup(loc.text[language]);
+        marker.data = loc;
+        markers.push(marker);
+    });
+
+    function switchLanguage(lang) {
+        language = lang;
+        markers.forEach(function(marker) {
+            marker.setPopupContent(marker.data.text[lang]);
+        });
+    }
+</script>
+</body>
+</html>
