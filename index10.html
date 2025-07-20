@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Climate Clock - Fullscreen</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: black;
+      color: red;
+      text-align: center;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    .clock-line {
+      font-size: 7em;
+      font-weight: bold;
+      margin-top: 20vh;
+      white-space: nowrap;
+    }
+
+    .start-button {
+      position: absolute;
+      top: 5vh;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #00ff00;
+      color: black;
+      font-size: 1.5em;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      z-index: 10000;
+    }
+
+    .ticker-wrapper {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #222;
+      color: #00ff00;
+      font-size: 2em;
+      white-space: nowrap;
+      overflow: hidden;
+      z-index: 9999;
+      padding: 15px 0;
+    }
+
+    .ticker {
+      display: inline-block;
+      padding-left: 100%;
+      animation: ticker 30s linear infinite;
+    }
+
+    @keyframes ticker {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Button to start ticking sound -->
+  <button class="start-button" onclick="startTick()">🔊 Start Sound</button>
+
+  <!-- Climate Clock Countdown -->
+  <div class="clock-line" id="countdown"></div>
+
+  <!-- Ticking Sound -->
+  <audio id="tickSound" loop>
+    <source src="tick.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+
+  <!-- Scrolling Ticker -->
+  <div class="ticker-wrapper">
+    <div class="ticker">
+      🌏 Climate emergency is real — take action now! 气候危机迫在眉睫，请立即行动！
+      🌱 Plant-based diets reduce carbon footprint! 素食有助减碳！
+      ♻️ Every small action counts in saving the planet! 拯救地球，每个小行动都重要！
+    </div>
+  </div>
+
+  <script>
+    function startTick() {
+      const audio = document.getElementById("tickSound");
+      audio.play().then(() => {
+        console.log("Ticking started");
+        document.querySelector(".start-button").style.display = "none";
+      }).catch((err) => {
+        console.error("Audio play failed:", err);
+        alert("Clicking is required to start sound due to browser rules.");
+      });
+    }
+
+    // Deadline in UTC: 2029-07-21 16:00
+    const deadlineUTC = new Date(Date.UTC(2029, 6, 21, 16, 0, 0));
+
+    function updateClock() {
+      const nowUTC = new Date();
+      const timeRemaining = deadlineUTC - nowUTC;
+
+      if (timeRemaining <= 0) {
+        document.getElementById("countdown").innerHTML = "00:00:00:00:00";
+        return;
+      }
+
+      const seconds = Math.floor((timeRemaining / 1000) % 60);
+      const minutes = Math.floor((timeRemaining / 1000 / 60) % 60);
+      const hours = Math.floor((timeRemaining / (1000 * 60 * 60)) % 24);
+      const days = Math.floor((timeRemaining / (1000 * 60 * 60 * 24)) % 365);
+      const years = Math.floor(timeRemaining / (1000 * 60 * 60 * 24 * 365));
+
+      const format = n => String(n).padStart(2, '0');
+
+      document.getElementById("countdown").innerHTML =
+        `${format(years)} : ${format(days)} : ${format(hours)} : ${format(minutes)} : ${format(seconds)}`;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+  </script>
+</body>
+</html>
