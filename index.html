@@ -14,11 +14,28 @@
       overflow: hidden;
     }
 
-    .clock-line {
-      font-size: 7em;
+    .clock-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 15vh;
+      gap: 5vw;
+    }
+
+    .time-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .time-value {
+      font-size: 12em; /* Large font for 65" display */
       font-weight: bold;
-      margin-top: 20vh;
-      white-space: nowrap;
+    }
+
+    .time-label {
+      font-size: 3em;
+      margin-top: 0.3em;
     }
 
     .start-button {
@@ -67,7 +84,28 @@
   <button class="start-button" onclick="startTick()">🔊 Start Sound</button>
 
   <!-- Climate Clock Countdown -->
-  <div class="clock-line" id="countdown"></div>
+  <div class="clock-container" id="countdown">
+    <div class="time-unit">
+      <div class="time-value" id="yy">00</div>
+      <div class="time-label">YY</div>
+    </div>
+    <div class="time-unit">
+      <div class="time-value" id="dd">00</div>
+      <div class="time-label">DD</div>
+    </div>
+    <div class="time-unit">
+      <div class="time-value" id="hh">00</div>
+      <div class="time-label">HH</div>
+    </div>
+    <div class="time-unit">
+      <div class="time-value" id="mm">00</div>
+      <div class="time-label">MM</div>
+    </div>
+    <div class="time-unit">
+      <div class="time-value" id="ss">00</div>
+      <div class="time-label">SS</div>
+    </div>
+  </div>
 
   <!-- Ticking Sound -->
   <audio id="tickSound" loop>
@@ -96,15 +134,14 @@
       });
     }
 
-    // Deadline in UTC: 2029-07-21 16:00
-    const deadlineUTC = new Date(Date.UTC(2029, 6, 21, 16, 0, 0));
+    const deadlineUTC = new Date(Date.UTC(2029, 6, 21, 16, 0, 0)); // July = month 6 (zero-indexed)
 
     function updateClock() {
       const nowUTC = new Date();
       const timeRemaining = deadlineUTC - nowUTC;
 
       if (timeRemaining <= 0) {
-        document.getElementById("countdown").innerHTML = "00:00:00:00:00";
+        ["yy", "dd", "hh", "mm", "ss"].forEach(id => document.getElementById(id).textContent = "00");
         return;
       }
 
@@ -116,8 +153,11 @@
 
       const format = n => String(n).padStart(2, '0');
 
-      document.getElementById("countdown").innerHTML =
-        `${format(years)} : ${format(days)} : ${format(hours)} : ${format(minutes)} : ${format(seconds)}`;
+      document.getElementById("yy").textContent = format(years);
+      document.getElementById("dd").textContent = format(days);
+      document.getElementById("hh").textContent = format(hours);
+      document.getElementById("mm").textContent = format(minutes);
+      document.getElementById("ss").textContent = format(seconds);
     }
 
     updateClock();
