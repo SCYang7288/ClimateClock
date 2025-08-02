@@ -133,26 +133,11 @@
   <!-- 倒數時鐘 -->
   <div class="clock-container">
     <div class="time-row">
-      <div class="time-unit">
-        <div class="time-value" id="yy">00</div>
-        <div class="time-label" id="label-yy">年</div>
-      </div>
-      <div class="time-unit">
-        <div class="time-value" id="dd">00</div>
-        <div class="time-label" id="label-dd">天</div>
-      </div>
-      <div class="time-unit">
-        <div class="time-value" id="hh">00</div>
-        <div class="time-label" id="label-hh">時</div>
-      </div>
-      <div class="time-unit">
-        <div class="time-value" id="mm">00</div>
-        <div class="time-label" id="label-mm">分</div>
-      </div>
-      <div class="time-unit">
-        <div class="time-value" id="ss">00</div>
-        <div class="time-label" id="label-ss">秒</div>
-      </div>
+      <div class="time-unit"><div class="time-value" id="yy">00</div><div class="time-label" id="label-yy">年</div></div>
+      <div class="time-unit"><div class="time-value" id="dd">00</div><div class="time-label" id="label-dd">天</div></div>
+      <div class="time-unit"><div class="time-value" id="hh">00</div><div class="time-label" id="label-hh">時</div></div>
+      <div class="time-unit"><div class="time-value" id="mm">00</div><div class="time-label" id="label-mm">分</div></div>
+      <div class="time-unit"><div class="time-value" id="ss">00</div><div class="time-label" id="label-ss">秒</div></div>
     </div>
 
     <div class="explanation-card" id="explanation">
@@ -179,9 +164,7 @@
     const audio = document.getElementById("tickSound");
 
     function startTick() {
-      audio.play().then(() => {
-        console.log("音效播放中");
-      }).catch(() => {
+      audio.play().catch(() => {
         alert("需點擊頁面才能播放聲音");
       });
     }
@@ -214,12 +197,12 @@
       },
       en: {
         explanation: "The Climate Clock warns humanity: without urgent emission cuts, global warming will exceed 1.5°C by 2030, causing climate disasters.<br/>Created by scientists and designers, it's a countdown to wake up the world.",
-        ticker: "🌱 Tzu Chi: Environmental protection is not a slogan, but a way of life.&emsp;🌿 Tzu Chi: If humanity doesn’t love the Earth, it will not sustain us.&emsp;♻️ Tzu Chi: Live simply, cherish resources, protect life and the planet.&emsp;🌏 Tzu Chi: Clean the mountains, clean the water, and purify the heart.&emsp;🌱 Tzu Chi: Caring for the Earth is caring for our future.",
+        ticker: "🌱 Jing Si Aphorisms: Environmental protection is not a slogan, but a way of life.&emsp;🌿 Jing Si Aphorisms: If humanity doesn’t love the Earth, it will not sustain us.&emsp;♻️ Jing Si Aphorisms: Live simply, cherish resources, protect life and the planet.&emsp;🌏 Jing Si Aphorisms: Clean the mountains, clean the water, and purify the heart.&emsp;🌱 Jing Si Aphorisms: Caring for the Earth is caring for our future.",
         labels: ["Years", "Days", "Hours", "Minutes", "Seconds"]
       },
       ms: {
         explanation: "Jam Iklim mengingatkan umat manusia: tanpa pengurangan karbon segera, pemanasan global akan melebihi 1.5°C sebelum tahun 2030.<br/>Dicipta oleh saintis dan pereka bentuk, ia berfungsi sebagai amaran kepada dunia.",
-        ticker: "🌱 Kata Bijak: Perlindungan alam sekitar bukan hanya slogan, tetapi gaya hidup.&emsp;🌿 Kata Bijak: Jika manusia tidak menyayangi bumi, bumi tidak akan bertahan.&emsp;♻️ Kata Bijak: Bersederhana dan hargai sumber alam untuk generasi akan datang.&emsp;🌏 Kata Bijak: Jagalah alam sekitar demi kesejahteraan bersama.&emsp;🌱 Kata Bijak: Menyayangi bumi adalah menyayangi diri sendiri.",
+        ticker: "🌱 Aforisma Jing Si: Perlindungan alam sekitar bukan hanya slogan, tetapi gaya hidup.&emsp;🌿 Aforisma Jing Si: Jika manusia tidak menyayangi bumi, bumi tidak akan bertahan.&emsp;♻️ Aforisma Jing Si: Bersederhana dan hargai sumber alam untuk generasi akan datang.&emsp;🌏 Aforisma Jing Si: Jagalah alam sekitar demi kesejahteraan bersama.&emsp;🌱 Aforisma Jing Si: Menyayangi bumi adalah menyayangi diri sendiri.",
         labels: ["Tahun", "Hari", "Jam", "Minit", "Saat"]
       },
       ta: {
