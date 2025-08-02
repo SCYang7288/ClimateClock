@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Climate Clock - Fullscreen</title>
+  <title>氣候時鐘 - 多語版</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -14,12 +14,49 @@
       overflow: hidden;
     }
 
+    .top-controls {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 10001;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .sound-controls button {
+      background-color: #00ff00;
+      color: black;
+      font-size: 0.9em;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .language-select select {
+      padding: 6px 10px;
+      font-size: 0.9em;
+      border-radius: 4px;
+      border: none;
+      background-color: #f1f1f1;
+    }
+
     .clock-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-top: 12vh;
+      gap: 5vh;
+    }
+
+    .time-row {
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 15vh;
-      gap: 5vw;
+      gap: 4vw;
+      flex-wrap: wrap;
     }
 
     .time-unit {
@@ -29,28 +66,25 @@
     }
 
     .time-value {
-      font-size: 12em; /* Large font for 65" display */
+      font-size: 12vw;
       font-weight: bold;
     }
 
     .time-label {
-      font-size: 3em;
-      margin-top: 0.3em;
+      font-size: 3vw;
+      margin-top: 0.2em;
     }
 
-    .start-button {
-      position: absolute;
-      top: 5vh;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #00ff00;
-      color: black;
-      font-size: 1.5em;
-      padding: 15px 30px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      z-index: 10000;
+    .explanation-card {
+      max-width: 85%;
+      background-color: rgba(0, 255, 0, 0.1);
+      color: #00ff00;
+      padding: 20px 30px;
+      border-radius: 16px;
+      border: 1px solid #00ff00;
+      font-size: 1.5vw;
+      line-height: 1.8;
+      text-align: left;
     }
 
     .ticker-wrapper {
@@ -69,7 +103,7 @@
     .ticker {
       display: inline-block;
       padding-left: 100%;
-      animation: ticker 30s linear infinite;
+      animation: ticker 40s linear infinite;
     }
 
     @keyframes ticker {
@@ -80,93 +114,138 @@
 </head>
 <body>
 
-  <!-- Button to start ticking sound -->
-  <button class="start-button" onclick="startTick()">🔊 Start Sound</button>
-
-  <!-- Climate Clock Countdown -->
-  <div class="clock-container" id="countdown">
-    <div class="time-unit">
-      <div class="time-value" id="yy">00</div>
-      <div class="time-label">YY 年份</div>
+  <!-- 控制列 -->
+  <div class="top-controls">
+    <div class="language-select">
+      <select id="langSelect" onchange="changeLanguage()">
+        <option value="zh">繁體中文</option>
+        <option value="en">English</option>
+        <option value="ms">Bahasa Melayu</option>
+        <option value="ta">தமிழ்</option>
+      </select>
     </div>
-    <div class="time-unit">
-      <div class="time-value" id="dd">00</div>
-      <div class="time-label">DD天份</div>
-    </div>
-    <div class="time-unit">
-      <div class="time-value" id="hh">00</div>
-      <div class="time-label">HH小时</div>
-    </div>
-    <div class="time-unit">
-      <div class="time-value" id="mm">00</div>
-      <div class="time-label">MM分钟</div>
-    </div>
-    <div class="time-unit">
-      <div class="time-value" id="ss">00</div>
-      <div class="time-label">SS秒钟</div>
+    <div class="sound-controls">
+      <button onclick="startTick()">🔊</button>
+      <button onclick="stopTick()">🔇</button>
     </div>
   </div>
 
-  <!-- Ticking Sound -->
+  <!-- 倒數時鐘 -->
+  <div class="clock-container">
+    <div class="time-row">
+      <div class="time-unit">
+        <div class="time-value" id="yy">00</div>
+        <div class="time-label" id="label-yy">年</div>
+      </div>
+      <div class="time-unit">
+        <div class="time-value" id="dd">00</div>
+        <div class="time-label" id="label-dd">天</div>
+      </div>
+      <div class="time-unit">
+        <div class="time-value" id="hh">00</div>
+        <div class="time-label" id="label-hh">時</div>
+      </div>
+      <div class="time-unit">
+        <div class="time-value" id="mm">00</div>
+        <div class="time-label" id="label-mm">分</div>
+      </div>
+      <div class="time-unit">
+        <div class="time-value" id="ss">00</div>
+        <div class="time-label" id="label-ss">秒</div>
+      </div>
+    </div>
+
+    <div class="explanation-card" id="explanation">
+      氣候時鐘提醒人類：若不積極減碳，全球升溫將在2030年前突破1.5°C，導致氣候災難。<br/>
+      它由科學家與設計師合作設計，是喚醒世界氣候意識的倒數鐘。
+    </div>
+  </div>
+
+  <!-- 音效 -->
   <audio id="tickSound" loop>
     <source src="tick.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
+    您的瀏覽器不支援音訊播放。
   </audio>
 
-  <!-- Scrolling Ticker -->
+  <!-- 跑馬字 -->
   <div class="ticker-wrapper">
-    <div class="ticker">
-      🌏 “Climate Time 1.5°C” refers to the global warming limit set by the Paris Agreement to avoid severe climate impacts.
-“气候时间1.5°C”是全球升温控制目标，源自《巴黎协定》，旨在避免气候灾难。
-
-🌱 With current warming at about 1.1°C, we may exceed 1.5°C by 2030.
-全球已升温约1.1°C，2030年恐突破临界点。
-
-♻️Urgent emission cuts are needed, aiming for net-zero by 2050 to prevent extreme weather and ecosystem collapse.
-需急速减排，并于2050年实现净零碳排放，以避免极端气候与生态系统崩溃。
+    <div class="ticker" id="tickerText">
+      🌱 靜思語：環保不是口號，而是生活的態度。🌿 靜思語：人類若不愛護地球，大地將無以為繼。♻️ 靜思語：少欲知足惜資源，護生愛地共未來。🌏 靜思語：淨山淨水淨人心，環保利他利子孫。🌱 靜思語：用心護地球，就是護我們的家。
     </div>
   </div>
 
+  <!-- JavaScript -->
   <script>
+    const audio = document.getElementById("tickSound");
+
     function startTick() {
-      const audio = document.getElementById("tickSound");
       audio.play().then(() => {
-        console.log("Ticking started");
-        document.querySelector(".start-button").style.display = "none";
-      }).catch((err) => {
-        console.error("Audio play failed:", err);
-        alert("Clicking is required to start sound due to browser rules.");
+        console.log("音效播放中");
+      }).catch(() => {
+        alert("需點擊頁面才能播放聲音");
       });
     }
 
-    const deadlineUTC = new Date(Date.UTC(2029, 6, 21, 16, 0, 0)); // July = month 6 (zero-indexed)
-
-    function updateClock() {
-      const nowUTC = new Date();
-      const timeRemaining = deadlineUTC - nowUTC;
-
-      if (timeRemaining <= 0) {
-        ["yy", "dd", "hh", "mm", "ss"].forEach(id => document.getElementById(id).textContent = "00");
-        return;
-      }
-
-      const seconds = Math.floor((timeRemaining / 1000) % 60);
-      const minutes = Math.floor((timeRemaining / 1000 / 60) % 60);
-      const hours = Math.floor((timeRemaining / (1000 * 60 * 60)) % 24);
-      const days = Math.floor((timeRemaining / (1000 * 60 * 60 * 24)) % 365);
-      const years = Math.floor(timeRemaining / (1000 * 60 * 60 * 24 * 365));
-
-      const format = n => String(n).padStart(2, '0');
-
-      document.getElementById("yy").textContent = format(years);
-      document.getElementById("dd").textContent = format(days);
-      document.getElementById("hh").textContent = format(hours);
-      document.getElementById("mm").textContent = format(minutes);
-      document.getElementById("ss").textContent = format(seconds);
+    function stopTick() {
+      audio.pause();
+      audio.currentTime = 0;
     }
 
+    const deadlineUTC = new Date(Date.UTC(2029, 6, 21, 16, 0, 0));
+    function updateClock() {
+      const now = new Date();
+      const timeRemaining = deadlineUTC - now;
+      if (timeRemaining <= 0) return;
+      const format = n => String(n).padStart(2, '0');
+      document.getElementById("yy").textContent = format(Math.floor(timeRemaining / (1000 * 60 * 60 * 24 * 365)));
+      document.getElementById("dd").textContent = format(Math.floor((timeRemaining / (1000 * 60 * 60 * 24)) % 365));
+      document.getElementById("hh").textContent = format(Math.floor((timeRemaining / (1000 * 60 * 60)) % 24));
+      document.getElementById("mm").textContent = format(Math.floor((timeRemaining / (1000 * 60)) % 60));
+      document.getElementById("ss").textContent = format(Math.floor((timeRemaining / 1000) % 60));
+    }
     updateClock();
     setInterval(updateClock, 1000);
+
+    const texts = {
+      zh: {
+        explanation: "氣候時鐘提醒人類：若不積極減碳，全球升溫將在2030年前突破1.5°C，導致氣候災難。<br/>它由科學家與設計師合作設計，是喚醒世界氣候意識的倒數鐘。",
+        ticker: "🌱 靜思語：環保不是口號，而是生活的態度。&emsp;🌿 靜思語：人類若不愛護地球，大地將無以為繼。&emsp;♻️ 靜思語：少欲知足惜資源，護生愛地共未來。&emsp;🌏 靜思語：淨山淨水淨人心，環保利他利子孫。&emsp;🌱 靜思語：用心護地球，就是護我們的家。",
+        labels: ["年", "天", "時", "分", "秒"]
+      },
+      en: {
+        explanation: "The Climate Clock warns humanity: without urgent emission cuts, global warming will exceed 1.5°C by 2030, causing climate disasters.<br/>Created by scientists and designers, it's a countdown to wake up the world.",
+        ticker: "🌱 Tzu Chi: Environmental protection is not a slogan, but a way of life.&emsp;🌿 Tzu Chi: If humanity doesn’t love the Earth, it will not sustain us.&emsp;♻️ Tzu Chi: Live simply, cherish resources, protect life and the planet.&emsp;🌏 Tzu Chi: Clean the mountains, clean the water, and purify the heart.&emsp;🌱 Tzu Chi: Caring for the Earth is caring for our future.",
+        labels: ["Years", "Days", "Hours", "Minutes", "Seconds"]
+      },
+      ms: {
+        explanation: "Jam Iklim mengingatkan umat manusia: tanpa pengurangan karbon segera, pemanasan global akan melebihi 1.5°C sebelum tahun 2030.<br/>Dicipta oleh saintis dan pereka bentuk, ia berfungsi sebagai amaran kepada dunia.",
+        ticker: "🌱 Kata Bijak: Perlindungan alam sekitar bukan hanya slogan, tetapi gaya hidup.&emsp;🌿 Kata Bijak: Jika manusia tidak menyayangi bumi, bumi tidak akan bertahan.&emsp;♻️ Kata Bijak: Bersederhana dan hargai sumber alam untuk generasi akan datang.&emsp;🌏 Kata Bijak: Jagalah alam sekitar demi kesejahteraan bersama.&emsp;🌱 Kata Bijak: Menyayangi bumi adalah menyayangi diri sendiri.",
+        labels: ["Tahun", "Hari", "Jam", "Minit", "Saat"]
+      },
+      ta: {
+        explanation: "காலநிலை கடிகாரம் மனிதனை எச்சரிக்கிறது: கிரக வெப்பநிலை 1.5°C ஐ மீறாமல் இருக்க விரைவான கார்பன் குறைப்புகள் அவசியம்.<br/>இது உலகை விழிப்புணர்வுக்குத் தூண்டும் எச்சரிக்கைக் கடிகாரம்.",
+        ticker: "🌱 சூழலியல் என்பது முழக்கமல்ல, வாழ்வியல்.&emsp;🌿 பூமியைப் பாதுகாப்பது மனித குருதியின் கடமை.&emsp;♻️ இயற்கையை நேசிப்போம், வளங்களை மதிப்போம்.&emsp;🌏 சுத்தமான சமூகம், நிலையான பூமி.&emsp;🌱 பூமிக்கு அன்பு செலுத்துவது, எதிர்காலத்திற்கான முதலீடு.",
+        labels: ["ஆண்டு", "நாள்", "மணி", "நிமிடம்", "வினாடி"]
+      }
+    };
+
+    function changeLanguage() {
+      const lang = document.getElementById("langSelect").value;
+      document.getElementById("explanation").innerHTML = texts[lang].explanation;
+
+      const ticker = document.getElementById("tickerText");
+      ticker.innerHTML = texts[lang].ticker;
+      ticker.classList.remove("ticker");
+      void ticker.offsetHeight;
+      ticker.classList.add("ticker");
+
+      const labels = texts[lang].labels;
+      document.getElementById("label-yy").textContent = labels[0];
+      document.getElementById("label-dd").textContent = labels[1];
+      document.getElementById("label-hh").textContent = labels[2];
+      document.getElementById("label-mm").textContent = labels[3];
+      document.getElementById("label-ss").textContent = labels[4];
+    }
   </script>
 </body>
 </html>
