@@ -14,14 +14,65 @@
       overflow: hidden;
     }
 
-    .top-controls {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      z-index: 10001;
+    /* Top wording style */
+    .explanation-card {
+      max-width: 85%;
+      background-color: rgba(0, 255, 0, 0.1);
+      color: #00ff00;
+      padding: 20px 30px;
+      border-radius: 16px;
+      border: 1px solid #00ff00;
+      font-size: 1.5vw;
+      line-height: 1.8;
+      text-align: left;
+      margin: 20px auto 0 auto;
+    }
+
+    /* Clock table style */
+    .clock-table {
       display: flex;
+      justify-content: center;
+      margin-top: 4vh;
+    }
+
+    .clock-row {
+      display: flex;
+      border: 2px solid #00ff00;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .clock-cell {
+      border-right: 2px solid #00ff00;
+      padding: 10px 20px;
+      text-align: center;
+      background-color: rgba(0, 255, 0, 0.05);
+    }
+
+    .clock-cell:last-child {
+      border-right: none;
+    }
+
+    .time-value {
+      font-size: 5vw;
+      font-weight: bold;
+      color: red;
+    }
+
+    .time-label {
+      font-size: 1.5vw;
+      color: #00ff00;
+    }
+
+    /* Bottom control panel */
+    .bottom-controls {
+      position: fixed;
+      bottom: 60px; /* above ticker */
+      width: 100%;
+      display: flex;
+      justify-content: center;
       gap: 10px;
-      align-items: center;
+      z-index: 10001;
     }
 
     .sound-controls button {
@@ -42,51 +93,7 @@
       background-color: #f1f1f1;
     }
 
-    .clock-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      margin-top: 12vh;
-      gap: 5vh;
-    }
-
-    .time-row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 4vw;
-      flex-wrap: wrap;
-    }
-
-    .time-unit {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .time-value {
-      font-size: 12vw;
-      font-weight: bold;
-    }
-
-    .time-label {
-      font-size: 3vw;
-      margin-top: 0.2em;
-    }
-
-    .explanation-card {
-      max-width: 85%;
-      background-color: rgba(0, 255, 0, 0.1);
-      color: #00ff00;
-      padding: 20px 30px;
-      border-radius: 16px;
-      border: 1px solid #00ff00;
-      font-size: 1.5vw;
-      line-height: 1.8;
-      text-align: left;
-    }
-
+    /* Ticker */
     .ticker-wrapper {
       position: fixed;
       bottom: 0;
@@ -114,8 +121,44 @@
 </head>
 <body>
 
-  <!-- 控制列 -->
-  <div class="top-controls">
+ 
+ 
+
+  <!-- Countdown clock as table -->
+  <div class="clock-table">
+    <div class="clock-row">
+      <div class="clock-cell">
+        <div class="time-value" id="yy">00</div>
+        <div class="time-label" id="label-yy">年</div>
+      </div>
+      <div class="clock-cell">
+        <div class="time-value" id="dd">00</div>
+        <div class="time-label" id="label-dd">天</div>
+      </div>
+      <div class="clock-cell">
+        <div class="time-value" id="hh">00</div>
+        <div class="time-label" id="label-hh">時</div>
+      </div>
+      <div class="clock-cell">
+        <div class="time-value" id="mm">00</div>
+        <div class="time-label" id="label-mm">分</div>
+      </div>
+      <div class="clock-cell">
+        <div class="time-value" id="ss">00</div>
+        <div class="time-label" id="label-ss">秒</div>
+      </div>
+    </div>
+  </div>
+
+<!-- Wording moved to top -->
+
+<div class="explanation-card" id="explanation">
+    氣候時鐘提醒人類：若不積極減碳，全球升溫將在2030年前突破1.5°C，導致氣候災難。<br/>
+    它由科學家與設計師合作設計，是喚醒世界氣候意識的倒數鐘。
+  </div>
+
+  <!-- Bottom control panel -->
+  <div class="bottom-controls">
     <div class="language-select">
       <select id="langSelect" onchange="changeLanguage()">
         <option value="zh">繁體中文</option>
@@ -130,36 +173,19 @@
     </div>
   </div>
 
-  <!-- 倒數時鐘 -->
-  <div class="clock-container">
-    <div class="time-row">
-      <div class="time-unit"><div class="time-value" id="yy">00</div><div class="time-label" id="label-yy">年</div></div>
-      <div class="time-unit"><div class="time-value" id="dd">00</div><div class="time-label" id="label-dd">天</div></div>
-      <div class="time-unit"><div class="time-value" id="hh">00</div><div class="time-label" id="label-hh">時</div></div>
-      <div class="time-unit"><div class="time-value" id="mm">00</div><div class="time-label" id="label-mm">分</div></div>
-      <div class="time-unit"><div class="time-value" id="ss">00</div><div class="time-label" id="label-ss">秒</div></div>
-    </div>
-
-    <div class="explanation-card" id="explanation">
-      氣候時鐘提醒人類：若不積極減碳，全球升溫將在2030年前突破1.5°C，導致氣候災難。<br/>
-      它由科學家與設計師合作設計，是喚醒世界氣候意識的倒數鐘。
-    </div>
-  </div>
-
-  <!-- 音效 -->
+  <!-- Sound -->
   <audio id="tickSound" loop>
     <source src="tick.mp3" type="audio/mpeg">
     您的瀏覽器不支援音訊播放。
   </audio>
 
-  <!-- 跑馬字 -->
+  <!-- Ticker -->
   <div class="ticker-wrapper">
     <div class="ticker" id="tickerText">
       🌱 靜思語：環保不是口號，而是生活的態度。🌿 靜思語：人類若不愛護地球，大地將無以為繼。♻️ 靜思語：少欲知足惜資源，護生愛地共未來。🌏 靜思語：淨山淨水淨人心，環保利他利子孫。🌱 靜思語：用心護地球，就是護我們的家。
     </div>
   </div>
 
-  <!-- JavaScript -->
   <script>
     const audio = document.getElementById("tickSound");
 
