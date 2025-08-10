@@ -204,7 +204,12 @@
     let prevValues = { yy: null, dd: null, hh: null, mm: null, ss: null };
 
     function startTick() { tickEnabled = true; }
-    function stopTick() { tickEnabled = false; }
+    function stopTick() { 
+  tickEnabled = false;
+  audio.pause();
+  audio.currentTime = 0; // reset to start so next play begins fresh
+}
+
 
     const deadlineUTC = new Date(Date.UTC(2029, 6, 21, 16, 0, 0));
 
