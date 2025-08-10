@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>氣候時鐘 - 多語版</title>
+  <title>氣候時鐘 - 多語版V1.1</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -171,6 +171,7 @@
   <div class="bottom-controls">
     <div class="language-select">
       <select id="langSelect" onchange="changeLanguage()">
+         <option value="ze">繁體中文English</option>
         <option value="zh">繁體中文</option>
         <option value="en">English</option>
         <option value="ms">Bahasa Melayu</option>
@@ -243,10 +244,15 @@
     updateClock();
 
     const texts = {
+      ze:{
+        explanation: "氣候時鐘提醒人類：若不積極減碳，全球升溫將在2030年前突破1.5°C，導致氣候災難。<br/>它由科學家與設計師合作設計，是喚醒世界氣候意識的倒數鐘。",
+        ticker: "🌱 靜思語：環保不是口號，而是生活的態度。&emsp; 🌱 Jing Si Aphorisms: Environmental protection is not a slogan, but a way of life. &emsp;🌿 靜思語：人類若不愛護地球，大地將無以為繼。&emsp; 🌿 Jing Si Aphorisms: If humanity doesn’t love the Earth, it will not sustain us.&emsp; ♻️ 靜思語：少欲知足惜資源，護生愛地共未來。&emsp; ♻️ Jing Si Aphorisms: Live simply, cherish resources, protect life and the planet.&emsp; 🌏 靜思語：淨山淨水淨人心，環保利他利子孫。&emsp;🌏 Jing Si Aphorisms: Clean the mountains, clean the water, and purify the heart.&emsp; 🌱 靜思語：用心護地球，就是護我們的家。&emsp; 🌱 Jing Si Aphorisms: Caring for the Earth is caring for our future.",
+        labels: ["年", "天", "時", "分", "秒"]
+      },
       zh: {
         explanation: "氣候時鐘提醒人類：若不積極減碳，全球升溫將在2030年前突破1.5°C，導致氣候災難。<br/>它由科學家與設計師合作設計，是喚醒世界氣候意識的倒數鐘。",
         ticker: "🌱 靜思語：環保不是口號，而是生活的態度。&emsp;🌿 靜思語：人類若不愛護地球，大地將無以為繼。&emsp;♻️ 靜思語：少欲知足惜資源，護生愛地共未來。&emsp;🌏 靜思語：淨山淨水淨人心，環保利他利子孫。&emsp;🌱 靜思語：用心護地球，就是護我們的家。",
-        labels: ["年", "天", "時", "分", "秒"]
+        labels: ["年Years", "天Days", "時Hours", "分Minutes", "秒Seconds"]
       },
       en: {
         explanation: "The Climate Clock warns humanity: without urgent emission cuts, global warming will exceed 1.5°C by 2030, causing climate disasters.<br/>Created by scientists and designers, it's a countdown to wake up the world.",
