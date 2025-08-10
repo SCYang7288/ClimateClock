@@ -28,46 +28,60 @@
       margin: 20px auto 0 auto;
     }
 
-   /* Clock table style */
-.clock-table {
-  display: flex;
-  justify-content: center;
-  margin-top: 6vh; /* a bit more space from the top */
-}
+    /* Clock table style */
+    .clock-table {
+      display: flex;
+      justify-content: center;
+      margin-top: 6vh;
+    }
 
-.clock-row {
-  display: flex;
-  border: 4px solid #00ff00; /* thicker border */
-  border-radius: 12px;
-  overflow: hidden;
-}
+    .clock-row {
+      display: flex;
+      border: 4px solid #00ff00;
+      border-radius: 12px;
+      overflow: hidden;
+    }
 
-.clock-cell {
-  border-right: 4px solid #00ff00;
-  padding: 20px 40px; /* bigger padding */
-  text-align: center;
-  background-color: rgba(0, 255, 0, 0.05);
-}
+    .clock-cell {
+      border-right: 4px solid #00ff00;
+      padding: 20px 40px;
+      text-align: center;
+      background-color: rgba(0, 255, 0, 0.05);
+    }
 
-.clock-cell:last-child {
-  border-right: none;
-}
+    .clock-cell:last-child {
+      border-right: none;
+    }
 
-.time-value {
-  font-size: 10vw; /* doubled from 5vw */
-  font-weight: bold;
-  color: red;
-}
+    .time-value {
+      font-size: 10vw;
+      font-weight: bold;
+      color: red;
+      transition: transform 0.2s;
+    }
 
-.time-label {
-  font-size: 3vw; /* doubled from 1.5vw */
-  color: #00ff00;
-}
+    .time-label {
+      font-size: 3vw;
+      color: #00ff00;
+    }
+
+    /* Blink + enlarge animation */
+    @keyframes blinkEnlarge {
+      0%   { color: red; transform: scale(1); }
+      25%  { color: white; transform: scale(1.3); }
+      50%  { color: red; transform: scale(1); }
+      75%  { color: white; transform: scale(1.3); }
+      100% { color: red; transform: scale(1); }
+    }
+
+    .blink-enlarge {
+      animation: blinkEnlarge 0.5s ease;
+    }
 
     /* Bottom control panel */
     .bottom-controls {
       position: fixed;
-      bottom: 60px; /* above ticker */
+      bottom: 60px;
       width: 100%;
       display: flex;
       justify-content: center;
@@ -121,10 +135,7 @@
 </head>
 <body>
 
- 
- 
-
-  <!-- Countdown clock as table -->
+  <!-- Countdown clock -->
   <div class="clock-table">
     <div class="clock-row">
       <div class="clock-cell">
@@ -150,14 +161,13 @@
     </div>
   </div>
 
-<!-- Wording moved to top -->
-
-<div class="explanation-card" id="explanation">
+  <!-- Wording -->
+  <div class="explanation-card" id="explanation">
     氣候時鐘提醒人類：若不積極減碳，全球升溫將在2030年前突破1.5°C，導致氣候災難。<br/>
     它由科學家與設計師合作設計，是喚醒世界氣候意識的倒數鐘。
   </div>
 
-  <!-- Bottom control panel -->
+  <!-- Controls -->
   <div class="bottom-controls">
     <div class="language-select">
       <select id="langSelect" onchange="changeLanguage()">
@@ -174,7 +184,7 @@
   </div>
 
   <!-- Sound -->
-  <audio id="tickSound" loop>
+  <audio id="tickSound" preload="auto">
     <source src="tick.mp3" type="audio/mpeg">
     您的瀏覽器不支援音訊播放。
   </audio>
@@ -188,32 +198,49 @@
 
   <script>
     const audio = document.getElementById("tickSound");
+    audio.load();
+    let tickEnabled = false;
+    let prevValues = { yy: null, dd: null, hh: null, mm: null, ss: null };
 
-    function startTick() {
-      audio.play().catch(() => {
-        alert("需點擊頁面才能播放聲音");
-      });
-    }
-
-    function stopTick() {
-      audio.pause();
-      audio.currentTime = 0;
-    }
+    function startTick() { tickEnabled = true; }
+    function stopTick() { tickEnabled = false; }
 
     const deadlineUTC = new Date(Date.UTC(2029, 6, 21, 16, 0, 0));
+
     function updateClock() {
       const now = new Date();
       const timeRemaining = deadlineUTC - now;
       if (timeRemaining <= 0) return;
+
       const format = n => String(n).padStart(2, '0');
-      document.getElementById("yy").textContent = format(Math.floor(timeRemaining / (1000 * 60 * 60 * 24 * 365)));
-      document.getElementById("dd").textContent = format(Math.floor((timeRemaining / (1000 * 60 * 60 * 24)) % 365));
-      document.getElementById("hh").textContent = format(Math.floor((timeRemaining / (1000 * 60 * 60)) % 24));
-      document.getElementById("mm").textContent = format(Math.floor((timeRemaining / (1000 * 60)) % 60));
-      document.getElementById("ss").textContent = format(Math.floor((timeRemaining / 1000) % 60));
+      const values = {
+        yy: format(Math.floor(timeRemaining / (1000 * 60 * 60 * 24 * 365))),
+        dd: format(Math.floor((timeRemaining / (1000 * 60 * 60 * 24)) % 365)),
+        hh: format(Math.floor((timeRemaining / (1000 * 60 * 60)) % 24)),
+        mm: format(Math.floor((timeRemaining / (1000 * 60)) % 60)),
+        ss: format(Math.floor((timeRemaining / 1000) % 60))
+      };
+
+      for (let id in values) {
+        const elem = document.getElementById(id);
+        if (prevValues[id] !== values[id]) {
+          elem.textContent = values[id];
+          elem.classList.add("blink-enlarge");
+          setTimeout(() => elem.classList.remove("blink-enlarge"), 500);
+        }
+        prevValues[id] = values[id];
+      }
+
+      if (tickEnabled) {
+        audio.currentTime = 0;
+        audio.play().catch(() => {});
+      }
+
+      const nextTick = 1000 - now.getMilliseconds();
+      setTimeout(updateClock, nextTick);
     }
+
     updateClock();
-    setInterval(updateClock, 1000);
 
     const texts = {
       zh: {
