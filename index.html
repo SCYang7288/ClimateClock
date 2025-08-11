@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html lang="ze">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>氣候時鐘 - 多語版V1.1</title>
+  <title>氣候時鐘 - 多語版V1.2</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -78,15 +78,45 @@
       animation: blinkEnlarge 0.5s ease;
     }
 
-    /* Bottom control panel */
-    .bottom-controls {
+    /* Bottom panel combining ticker + controls */
+    .bottom-panel {
       position: fixed;
-      bottom: 60px;
+      bottom: 0;
       width: 100%;
+      background: #111;
+      color: #00ff00;
+      z-index: 10001;
+    }
+
+    /* Ticker inside panel */
+    .ticker-wrapper {
+      width: 100%;
+      background: #222;
+      font-size: 2em;
+      white-space: nowrap;
+      overflow: hidden;
+      padding: 10px 0;
+      box-sizing: border-box;
+    }
+
+    .ticker {
+      display: inline-block;
+      padding-left: 100%;
+      animation: ticker 40s linear infinite;
+    }
+
+    @keyframes ticker {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* Controls inside panel */
+    .bottom-controls {
+      padding: 8px 0;
       display: flex;
       justify-content: center;
       gap: 10px;
-      z-index: 10001;
+      background: #111;
     }
 
     .sound-controls button {
@@ -106,31 +136,6 @@
       border: none;
       background-color: #f1f1f1;
     }
-
-    /* Ticker */
-    .ticker-wrapper {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      background: #222;
-      color: #00ff00;
-      font-size: 2em;
-      white-space: nowrap;
-      overflow: hidden;
-      z-index: 9999;
-      padding: 15px 0;
-    }
-
-    .ticker {
-      display: inline-block;
-      padding-left: 100%;
-      animation: ticker 40s linear infinite;
-    }
-
-    @keyframes ticker {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-100%); }
-    }
   </style>
 </head>
 <body>
@@ -140,47 +145,54 @@
     <div class="clock-row">
       <div class="clock-cell">
         <div class="time-value" id="yy">00</div>
-        <div class="time-label" id="label-yy">年</div>
+        <div class="time-label" id="label-yy">年Years</div>
       </div>
       <div class="clock-cell">
         <div class="time-value" id="dd">00</div>
-        <div class="time-label" id="label-dd">天</div>
+        <div class="time-label" id="label-dd">天Days</div>
       </div>
       <div class="clock-cell">
         <div class="time-value" id="hh">00</div>
-        <div class="time-label" id="label-hh">時</div>
+        <div class="time-label" id="label-hh">時Hours</div>
       </div>
       <div class="clock-cell">
         <div class="time-value" id="mm">00</div>
-        <div class="time-label" id="label-mm">分</div>
+        <div class="time-label" id="label-mm">分Minutes</div>
       </div>
       <div class="clock-cell">
         <div class="time-value" id="ss">00</div>
-        <div class="time-label" id="label-ss">秒</div>
+        <div class="time-label" id="label-ss">秒Seconds</div>
       </div>
     </div>
   </div>
 
   <!-- Wording -->
   <div class="explanation-card" id="explanation">
-    氣候時鐘提醒人類：若不積極減碳，全球升溫將在2030年前突破1.5°C，導致氣候災難。<br/>
+    氣候時鐘提、醒人類：若不積極減碳，全球升溫將在2030年前突破1.5°C，導致氣候災難。<br/>
     它由科學家與設計師合作設計，是喚醒世界氣候意識的倒數鐘。
   </div>
 
-  <!-- Controls -->
-  <div class="bottom-controls">
-    <div class="language-select">
-      <select id="langSelect" onchange="changeLanguage()">
-         <option value="ze">繁體中文English</option>
-        <option value="zh">繁體中文</option>
-        <option value="en">English</option>
-        <option value="ms">Bahasa Melayu</option>
-        <option value="ta">தமிழ்</option>
-      </select>
+  <!-- Bottom panel: ticker + controls -->
+  <div class="bottom-panel">
+    <div class="ticker-wrapper">
+      <div class="ticker" id="tickerText">
+🌱 靜思語：環保不是口號，而是生活的態度。&emsp; 🌱 Jing Si Aphorisms: Environmental protection is not a slogan, but a way of life. &emsp;🌿 靜思語：人類若不愛護地球，大地將無以為繼。&emsp; 🌿 Jing Si Aphorisms: If humanity doesn’t love the Earth, it will not sustain us.&emsp; ♻️ 靜思語：少欲知足惜資源，護生愛地共未來。&emsp; ♻️ Jing Si Aphorisms: Live simply, cherish resources, protect life and the planet.&emsp; 🌏 靜思語：淨山淨水淨人心，環保利他利子孫。&emsp;🌏 Jing Si Aphorisms: Clean the mountains, clean the water, and purify the heart.&emsp; 🌱 靜思語：用心護地球，就是護我們的家。&emsp; 🌱 Jing Si Aphorisms: Caring for the Earth is caring for our future.
+      </div>
     </div>
-    <div class="sound-controls">
-      <button onclick="startTick()">🔊</button>
-      <button onclick="stopTick()">🔇</button>
+    <div class="bottom-controls">
+      <div class="language-select">
+        <select id="langSelect" onchange="changeLanguage()">
+          <option value="ze">繁體中文English</option>
+          <option value="zh">繁體中文</option>
+          <option value="en">English</option>
+          <option value="ms">Bahasa Melayu</option>
+          <option value="ta">தமிழ்</option>
+        </select>
+      </div>
+      <div class="sound-controls">
+        <button onclick="startTick()">🔊</button>
+        <button onclick="stopTick()">🔇</button>
+      </div>
     </div>
   </div>
 
@@ -190,13 +202,6 @@
     您的瀏覽器不支援音訊播放。
   </audio>
 
-  <!-- Ticker -->
-  <div class="ticker-wrapper">
-    <div class="ticker" id="tickerText">
-      🌱 靜思語：環保不是口號，而是生活的態度。🌿 靜思語：人類若不愛護地球，大地將無以為繼。♻️ 靜思語：少欲知足惜資源，護生愛地共未來。🌏 靜思語：淨山淨水淨人心，環保利他利子孫。🌱 靜思語：用心護地球，就是護我們的家。
-    </div>
-  </div>
-
   <script>
     const audio = document.getElementById("tickSound");
     audio.load();
@@ -205,11 +210,10 @@
 
     function startTick() { tickEnabled = true; }
     function stopTick() { 
-  tickEnabled = false;
-  audio.pause();
-  audio.currentTime = 0; // reset to start so next play begins fresh
-}
-
+      tickEnabled = false;
+      audio.pause();
+      audio.currentTime = 0;
+    }
 
     const deadlineUTC = new Date(Date.UTC(2029, 6, 21, 16, 0, 0));
 
@@ -258,8 +262,7 @@
       zh: {
         explanation: "氣候時鐘提醒人類：若不積極減碳，全球升溫將在2030年前突破1.5°C，導致氣候災難。<br/>它由科學家與設計師合作設計，是喚醒世界氣候意識的倒數鐘。",
         ticker: "🌱 靜思語：環保不是口號，而是生活的態度。&emsp;🌿 靜思語：人類若不愛護地球，大地將無以為繼。&emsp;♻️ 靜思語：少欲知足惜資源，護生愛地共未來。&emsp;🌏 靜思語：淨山淨水淨人心，環保利他利子孫。&emsp;🌱 靜思語：用心護地球，就是護我們的家。",
-labels: ["年", "天", "時", "分", "秒"]
-
+        labels: ["年", "天", "時", "分", "秒"]
       },
       en: {
         explanation: "The Climate Clock warns humanity: without urgent emission cuts, global warming will exceed 1.5°C by 2030, causing climate disasters.<br/>Created by scientists and designers, it's a countdown to wake up the world.",
