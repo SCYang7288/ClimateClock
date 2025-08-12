@@ -16,14 +16,34 @@
 
     /* Info pages container */
     .explanation-card {
-  min-height:  fit-content; /* auto height */
+  max-width: 85%;
+  background-color: rgba(0, 255, 0, 0.08);
+  color: #00ff00;
+  padding: 20px 30px;
+  border-radius: 16px;
+  border: 1px solid #00ff00;
+  font-size: 1.2vw;
+  line-height: 1.6;
+  text-align: left;
+  margin: 20px auto 0 auto;
+  position: relative;
+  min-height: 380px; /* increase height for ze bilingual */
+  overflow: hidden; /* keep both pages same size without scrolling */
 }
 
 .page {
-  position: relative; /* was absolute */
+  position: absolute; 
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
   opacity: 0;
   transition: opacity 1s ease-in-out;
   z-index: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* keep centered vertically */
+  align-items: flex-start;
   pointer-events: none;
   will-change: opacity;
 }
@@ -33,7 +53,6 @@
   z-index: 2;
   pointer-events: auto;
 }
-
     /* Clock table style */
     .clock-table {
       display: flex;
