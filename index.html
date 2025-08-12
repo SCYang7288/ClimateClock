@@ -16,43 +16,34 @@
 
     /* Info pages container */
     .explanation-card {
-      max-width: 85%;
-      background-color: rgba(0, 255, 0, 0.08);
-      color: #00ff00;
-      padding: 20px 30px;
-      border-radius: 16px;
-      border: 1px solid #00ff00;
-      font-size: 1.2vw;
-      line-height: 1.6;
-      text-align: left;
-      margin: 20px auto 0 auto;
-      position: relative;
-      min-height: 180px;
-      overflow: hidden;
-    }
+  max-width: 85%;
+  background-color: rgba(0, 255, 0, 0.08);
+  color: #00ff00;
+  padding: 20px 30px;
+  border-radius: 16px;
+  border: 1px solid #00ff00;
+  font-size: 1.2vw;
+  line-height: 1.6;
+  text-align: left;
+  margin: 20px auto 0 auto;
+  position: relative;
+  /* remove min-height & overflow to allow full content */
+}
 
-      .page {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      right: 20px;
-      bottom: 20px;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-      z-index: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      pointer-events: none;
-      will-change: opacity;
-    }
-    .page.active {
-      opacity: 1;
-      z-index: 2;
-      pointer-events: auto;
-    }
-    
+.page {
+  position: relative; /* was absolute */
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  z-index: 0;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+.page.active {
+  opacity: 1;
+  z-index: 2;
+  pointer-events: auto;
+}
 
     /* Clock table style */
     .clock-table {
