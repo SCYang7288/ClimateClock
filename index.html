@@ -27,7 +27,7 @@
       text-align: left;
       margin: 20px auto 0 auto;
       position: relative;
-      min-height: 180px; /* keep minimum height but allow content to grow */
+      min-height: 180px;
       overflow: hidden;
     }
 
@@ -42,9 +42,9 @@
       z-index: 0;
       display: flex;
       flex-direction: column;
-      justify-content: center; /* vertically center content */
-      align-items: flex-start;  /* keep text left-aligned */
-      pointer-events: none;     /* non-active pages won't intercept clicks */
+      justify-content: center;
+      align-items: flex-start;
+      pointer-events: none;
       will-change: opacity;
     }
     .page.active {
@@ -57,13 +57,16 @@
     .clock-table {
       display: flex;
       justify-content: center;
-      margin-top: 2vh;
+      align-items: center;
+      height: 50vh; /* Clock takes 50% of screen height */
+      margin-top: 0;
     }
     .clock-row {
       display: flex;
       border: 4px solid #00ff00;
       border-radius: 12px;
       overflow: hidden;
+      transform: scale(1.2); /* Slightly larger clock */
     }
     .clock-cell {
       border-right: 4px solid #00ff00;
@@ -75,13 +78,13 @@
       border-right: none;
     }
     .time-value {
-      font-size: 8vw;
+      font-size: 15vh; /* Responsive size */
       font-weight: bold;
       color: red;
       transition: transform 0.2s;
     }
     .time-label {
-      font-size: 2vw;
+      font-size: 4vh; /* Responsive size */
       color: #00ff00;
     }
 
@@ -227,7 +230,6 @@
       audio.currentTime = 0;
     }
 
-    // Deadline (UTC)
     const deadlineUTC = new Date(Date.UTC(2029, 6, 21, 16, 0, 0));
 
     function updateClock() {
@@ -265,78 +267,41 @@
 
     updateClock();
 
-    // Texts for all languages (ze = bilingual default)
     const texts = {
       ze: {
         labels: ["年Years", "天Days", "時Hours", "分Minutes", "秒Seconds"],
         ticker: "🌱 靜思語：環保不是口號，而是生活的態度。&emsp; 🌱 Jing Si Aphorisms: Environmental protection is not a slogan, but a way of life.&emsp;🌿 靜思語：人類若不愛護地球，大地將無以為繼。&emsp; 🌿 Jing Si Aphorisms: If humanity doesn’t love the Earth, it will not sustain us.",
-
         page1: "<h3><strong>气候时钟</strong></h3><p><strong>缘起</strong>：始于 <strong>2020 年 9 月 19 日</strong>，当时它在纽约曼哈顿的 <strong>联合艺术大楼（Metronome）</strong> 上首次公开展示。</p><p><strong>定义</strong>：一个实时倒计时工具，显示全球碳排放预算（将升温控制在<strong>1.5°C</strong>以内）的剩余时间。</p><h3><strong>Climate Clock</strong></h3><p><strong>Origin</strong>: Started on <strong>19 September 2020</strong>, when it was first publicly displayed on the <strong>Metronome</strong> in Manhattan, New York.</p> <p><strong>Definition</strong>: A real-time countdown tool that shows the remaining global carbon budget time to keep warming within <strong>1.5°C</strong>.</p>",
-page2:"<h3><strong>气候时钟</strong></h3><p><strong>计算依据</strong>：基于当前温室气体排放速率和科学模型（如<strong>IPCC</strong>数据）。</p><p><strong>核心信息</strong>：提醒人类必须在时限前实现<strong>净零排放</strong>，否则将面临不可逆的气候灾难。</p><h3><strong>Climate Clock</strong></h3><p><strong>Calculation Basis</strong>: Based on current greenhouse gas emission rates and scientific models (such as <strong>IPCC</strong> data).</p><p><strong>Core Message</strong>: Reminds humanity that we must achieve <strong>net-zero emissions</strong> before the time runs out, or face irreversible climate disasters.</p>"
-      },
-      zh: {
-        labels: ["年", "天", "時", "分", "秒"],
-        ticker: "🌱 靜思語：環保不是口號，而是生活的態度。&emsp;🌿 靜思語：人類若不愛護地球，大地將無以為繼。",
-        page1: "<h3><strong>氣候時鐘</strong></h3><p><strong>緣起</strong>：始於 2020 年 9 月 19 日，首次於紐約曼哈頓 Metronome 公開展示。</p><p><strong>定義</strong>：一個實時倒數工具，顯示全球碳排放預算（將升溫控制在 1.5°C 以內）的剩餘時間。</p>",
-        page2: "<h3><strong>氣候時鐘</strong></h3><p><strong>計算依據</strong>：基於當前溫室氣體排放速率與科學模型（如 IPCC 資料）。</p><p><strong>核心訊息</strong>：提醒人類必須在時限前實現淨零排放，否則將面臨不可逆的氣候災難。</p>"
-      },
-      en: {
-        labels: ["Years", "Days", "Hours", "Minutes", "Seconds"],
-        ticker: "🌱 Jing Si Aphorisms: Environmental protection is not a slogan, but a way of life.&emsp;🌿 Jing Si Aphorisms: If humanity doesn’t love the Earth, it will not sustain us.",
-        page1: "<h3><strong>Climate Clock</strong></h3><p><strong>Origin</strong>: Started on 19 September 2020, first publicly displayed at the Metronome in Manhattan, New York.</p><p><strong>Definition</strong>: A real-time countdown showing the remaining global carbon budget to keep warming within 1.5°C.</p>",
-        page2: "<h3><strong>Climate Clock</strong></h3><p><strong>Calculation Basis</strong>: Based on current greenhouse gas emission rates and scientific models (e.g., IPCC data).</p><p><strong>Core Message</strong>: Humanity must reach net-zero emissions before time runs out or face irreversible climate disasters.</p>"
-      },
-      ms: {
-        labels: ["Tahun", "Hari", "Jam", "Minit", "Saat"],
-        ticker: "🌱 Aforisma Jing Si: Perlindungan alam sekitar bukan hanya slogan, tetapi gaya hidup.&emsp;🌿 Aforisma Jing Si: Jika manusia tidak menyayangi bumi, bumi tidak akan bertahan.",
-        page1: "<h3><strong>Jam Iklim</strong></h3><p><strong>Asal-usul</strong>: Bermula pada 19 September 2020, pertama kali dipamerkan di Metronome, Manhattan, New York.</p><p><strong>Definisi</strong>: Alat kira detik masa nyata yang menunjukkan baki masa bajet karbon global untuk kekal dalam had 1.5°C.</p>",
-        page2: "<h3><strong>Jam Iklim</strong></h3><p><strong>Asas Pengiraan</strong>: Berdasarkan kadar pelepasan gas rumah hijau semasa dan model saintifik (contohnya, data IPCC).</p><p><strong>Mesej Utama</strong>: Manusia mesti mencapai sifar bersih sebelum masa tamat atau menghadapi bencana iklim yang tidak dapat dipulihkan.</p>"
-      },
-      ta: {
-        labels: ["ஆண்டு", "நாள்", "மணி", "நிமிடம்", "வினாடி"],
-        ticker: "🌱 சூழலியல் என்பது முழக்கமல்ல, வாழ்வியல்.&emsp;🌿 பூமியைப் பாதுகாப்பது மனித குருதியின் கடமை.",
-        page1: "<h3><strong>காலநிலை கடிகாரம்</strong></h3><p><strong>தொடக்கம்</strong>: 19 செப்டம்பர் 2020 அன்று மான்ஹாட்டன், நியூயார்க் நகரில் மெட்ரோனோமில் முதன்முதலாகக் காட்டப்பட்டது.</p><p><strong>வரையறை</strong>: உலகளாவிய கார்பன் பட்ஜெட்டின் மீதமுள்ள நேரத்தை காட்டும் நேரடி கவுண்ட்டவுன் கருவி, 1.5°C ஐ மீறாமல் வைத்திருக்க.</p>",
-        page2: "<h3><strong>காலநிலை கடிகாரம்</strong></h3><p><strong>கணக்கீட்டு அடிப்படை</strong>: தற்போதைய பசுமைக் காற்று வாயு உமிழ்வு வீதங்கள் மற்றும் அறிவியல் மாதிரிகள் (உதா: IPCC தரவு) அடிப்படையில்.</p><p><strong>முக்கிய செய்தி</strong>: மனிதகுலம் நேரம் முடிவதற்கு முன் நிகர சுழற்சி வெளியீட்டை அடைய வேண்டும், இல்லையெனில் மாற்ற முடியாத காலநிலை பேரழிவுகளை சந்திக்க நேரிடும்.</p>"
+        page2:"<h3><strong>气候时钟</strong></h3><p><strong>计算依据</strong>：基于当前温室气体排放速率和科学模型（如<strong>IPCC</strong>数据）。</p><p><strong>核心信息</strong>：提醒人类必须在时限前实现<strong>净零排放</strong>，否则将面临不可逆的气候灾难。</p><h3><strong>Climate Clock</strong></h3><p><strong>Calculation Basis</strong>: Based on current greenhouse gas emission rates and scientific models (such as <strong>IPCC</strong> data).</p><p><strong>Core Message</strong>: Reminds humanity that we must achieve <strong>net-zero emissions</strong> before the time runs out, or face irreversible climate disasters.</p>"
       }
     };
 
-    // Safely change language, with fallback
     function changeLanguage() {
       const sel = document.getElementById("langSelect");
       const lang = sel ? sel.value : "ze";
       const data = texts[lang] || texts.ze;
-
-      // Clock labels
       const labels = data.labels;
       document.getElementById("label-yy").textContent = labels[0];
       document.getElementById("label-dd").textContent = labels[1];
       document.getElementById("label-hh").textContent = labels[2];
       document.getElementById("label-mm").textContent = labels[3];
       document.getElementById("label-ss").textContent = labels[4];
-
-      // Ticker (restart animation safely)
       const ticker = document.getElementById("tickerText");
       ticker.innerHTML = data.ticker || "";
       ticker.classList.remove("ticker");
-      void ticker.offsetWidth; // force reflow
+      void ticker.offsetWidth;
       ticker.classList.add("ticker");
-
-      // Pages content
       document.getElementById("page1").innerHTML = data.page1 || "";
       document.getElementById("page2").innerHTML = data.page2 || "";
     }
 
-    // Crossfade with a small overlap (incoming starts immediately, outgoing removed after 250ms)
     let currentPage = 1;
-    const CROSSFADE_OVERLAP_MS = 250; // incoming starts, after this ms the outgoing will fade out
-
+    const CROSSFADE_OVERLAP_MS = 250;
     setInterval(() => {
       const p1 = document.getElementById("page1");
       const p2 = document.getElementById("page2");
       if (!p1 || !p2) return;
-
       if (currentPage === 1) {
-        // show p2, then remove p1 after a short overlap
         p2.classList.add("active");
         setTimeout(() => p1.classList.remove("active"), CROSSFADE_OVERLAP_MS);
         currentPage = 2;
@@ -347,7 +312,6 @@ page2:"<h3><strong>气候时钟</strong></h3><p><strong>计算依据</strong>：
       }
     }, 30000);
 
-    // Init
     document.addEventListener("DOMContentLoaded", () => {
       changeLanguage();
     });
