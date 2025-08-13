@@ -317,7 +317,15 @@
       ticker.classList.add("ticker");
       document.getElementById("page1").innerHTML = data.page1 || "";
       document.getElementById("page2").innerHTML = data.page2 || "";
+   
+  // 🔹 Dynamic card height based on language
+  const card = document.querySelector(".explanation-card");
+  if (lang === "ze") {
+    card.style.minHeight = "380px"; // taller for bilingual text
+  } else {
+    card.style.minHeight = "240px"; // default for others
     }
+     }
 
     let currentPage = 1;
     const CROSSFADE_OVERLAP_MS = 250;
