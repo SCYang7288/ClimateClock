@@ -12,80 +12,55 @@
       text-align: center;
       margin: 0;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100vh; /* Full viewport height */
     }
 
-    /* Info pages container */
-    .explanation-card {
-  max-width: 85%;
-  background-color: rgba(0, 255, 0, 0.08);
-  color: #00ff00;
-  padding: 20px 30px;
-  border-radius: 16px;
-  border: 1px solid #00ff00;
-  font-size: 1.2vw;
-  line-height: 1.6;
-  text-align: left;
-  margin: 20px auto 0 auto;
-  position: relative;
-  min-height: 380px; /* increase height for ze bilingual */
-  overflow: hidden; /* keep both pages same size without scrolling */
-}
-
-.page {
-  position: absolute; 
-  top: 20px;
-  left: 20px;
-  right: 20px;
-  bottom: 20px;
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-  z-index: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* keep centered vertically */
-  align-items: flex-start;
-  pointer-events: none;
-  will-change: opacity;
-}
-
-.page.active {
-  opacity: 1;
-  z-index: 2;
-  pointer-events: auto;
-}
     /* Clock table style */
     .clock-table {
+      flex: 1; /* Fill remaining space above bottom panel */
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 50vh; /* Clock takes 50% of screen height */
       margin-top: 0;
     }
+
     .clock-row {
       display: flex;
-      border: 4px solid #00ff00;
-      border-radius: 12px;
+      border: 0.6vh solid #00ff00; /* scaled border size */
+      border-radius: 1vh;
       overflow: hidden;
-      transform: scale(1.2); /* Slightly larger clock */
+      padding: 1vh;
     }
+
     .clock-cell {
-      border-right: 4px solid #00ff00;
-      padding: 10px 20px;
+      border-right: 0.6vh solid #00ff00;
+      padding: 1vh 2vh;
       text-align: center;
       background-color: rgba(0, 255, 0, 0.05);
+      flex: 1; /* evenly stretch */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
+
     .clock-cell:last-child {
       border-right: none;
     }
+
     .time-value {
-      font-size: 15vh; /* Responsive size */
+      font-size: calc(8vw + 4vh); /* responsive number size */
       font-weight: bold;
       color: red;
+      line-height: 1;
       transition: transform 0.2s;
     }
+
     .time-label {
-      font-size: 4vh; /* Responsive size */
+      font-size: calc(2vw + 1.5vh); /* responsive label size */
       color: #00ff00;
+      line-height: 1.2;
     }
 
     @keyframes blinkEnlarge {
@@ -97,6 +72,46 @@
     }
     .blink-enlarge {
       animation: blinkEnlarge 0.5s ease;
+    }
+
+    /* Info pages container */
+    .explanation-card {
+      max-width: 85%;
+      background-color: rgba(0, 255, 0, 0.08);
+      color: #00ff00;
+      padding: 20px 30px;
+      border-radius: 16px;
+      border: 1px solid #00ff00;
+      font-size: 1.2vw;
+      line-height: 1.6;
+      text-align: left;
+      margin: 20px auto 0 auto;
+      position: relative;
+      min-height: 380px;
+      overflow: hidden;
+    }
+
+    .page {
+      position: absolute; 
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      z-index: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      pointer-events: none;
+      will-change: opacity;
+    }
+
+    .page.active {
+      opacity: 1;
+      z-index: 2;
+      pointer-events: auto;
     }
 
     /* Bottom panel */
@@ -149,8 +164,6 @@
       border: none;
       background-color: #f1f1f1;
     }
-
-    /* Make headings a bit more compact */
     .page h3 { margin: 0 0 8px 0; }
     .page p  { margin: 6px 0; }
   </style>
@@ -273,8 +286,8 @@
         ticker: "🌱 静思语：环保不是口号，而是生活的态度。&emsp; 🌱 Jing Si Aphorisms: Environmental protection is not a slogan, but a way of life.&emsp;🌿 静思语：人类若不爱护地球，大地将无以为继。&emsp; 🌿 Jing Si Aphorisms: If humanity doesn’t love the Earth, it will not sustain us.",
         page1: "<h3><strong>气候时钟</strong></h3><p><strong>缘起</strong>：始于 <strong>2020 年 9 月 19 日</strong>，当时它在纽约曼哈顿的 <strong>联合艺术大楼（Metronome）</strong> 上首次公开展示。</p><p><strong>定义</strong>：一个实时倒计时工具，显示全球碳排放预算（将升温控制在<strong>1.5°C</strong>以内）的剩余时间。</p><h3><strong>Climate Clock</strong></h3><p><strong>Origin</strong>: Started on <strong>19 September 2020</strong>, when it was first publicly displayed on the <strong>Metronome</strong> in Manhattan, New York.</p> <p><strong>Definition</strong>: A real-time countdown tool that shows the remaining global carbon budget time to keep warming within <strong>1.5°C</strong>.</p>",
         page2:"<h3><strong>气候时钟</strong></h3><p><strong>计算依据</strong>：基于当前温室气体排放速率和科学模型（如<strong>Intergovernmental Panel on Climate Change (IPCC)</strong>数据）。</p><p><strong>核心信息</strong>：提醒人类必须在时限前实现<strong>净零排放</strong>，否则将面临不可逆的气候灾难。</p><h3><strong>Climate Clock</strong></h3><p><strong>Calculation Basis</strong>: Based on current greenhouse gas emission rates and scientific models (such as <strong>Intergovernmental Panel on Climate Change (IPCC)</strong> data).</p><p><strong>Core Message</strong>: Reminds humanity that we must achieve <strong>net-zero emissions</strong> before the time runs out, or face irreversible climate disasters.</p>"
-      },
-            zh: {
+      }
+  zh: {
           labels: ["年", "天", "时", "分", "秒"],
           ticker: "🌱 静思语：环保不是口号，而是生活的态度。&emsp;🌿 静思语：人类若不爱护地球，大地将无以为继。",
           page1: "<h3><strong>气候时钟</strong></h3><p><strong>缘起</strong>：始于 2020 年 9 月 19 日，首次于纽约曼哈顿 Metronome 公开展示。</p><p><strong>定义</strong>：一个实时倒数工具，显示全球碳排放预算（将升温控制在 1.5°C 以内）的剩余时间。</p>",
@@ -297,7 +310,8 @@
           ticker: "🌱 சூழலியல் என்பது முழக்கமல்ல, வாழ்வியல்.&emsp;🌿 பூமியைப் பாதுகாப்பது மனித குருதியின் கடமை.",
           page1: "<h3><strong>காலநிலை கடிகாரம்</strong></h3><p><strong>தொடக்கம்</strong>: 19 செப்டம்பர் 2020 அன்று மான்ஹாட்டன், நியூயார்க் நகரில் மெட்ரோனோமில் முதன்முதலாகக் காட்டப்பட்டது.</p><p><strong>வரையறை</strong>: உலகளாவிய கார்பன் பட்ஜெட்டின் மீதமுள்ள நேரத்தை காட்டும் நேரடி கவுண்ட்டவுன் கருவி, 1.5°C ஐ மீறாமல் வைத்திருக்க.</p>",
           page2: "<h3><strong>காலநிலை கடிகாரம்</strong></h3><p><strong>கணக்கீட்டு அடிப்படை</strong>: தற்போதைய பசுமைக் காற்று வாயு உமிழ்வு வீதங்கள் மற்றும் அறிவியல் மாதிரிகள் (உதா: IPCC தரவு) அடிப்படையில்.</p><p><strong>முக்கிய செய்தி</strong>: மனிதகுலம் நேரம் முடிவதற்கு முன் நிகர சுழற்சி வெளியீட்டை அடைய வேண்டும், இல்லையெனில் மாற்ற முடியாத காலநிலை பேரழிவுகளை சந்திக்க நேரிடும்.</p>"
-        }
+        }   
+      
     };
 
     function changeLanguage() {
@@ -317,15 +331,14 @@
       ticker.classList.add("ticker");
       document.getElementById("page1").innerHTML = data.page1 || "";
       document.getElementById("page2").innerHTML = data.page2 || "";
-   
-  // 🔹 Dynamic card height based on language
-  const card = document.querySelector(".explanation-card");
-  if (lang === "ze") {
-    card.style.minHeight = "380px"; // taller for bilingual text
-  } else {
-    card.style.minHeight = "240px"; // default for others
+
+      const card = document.querySelector(".explanation-card");
+      if (lang === "ze") {
+        card.style.minHeight = "380px";
+      } else {
+        card.style.minHeight = "240px";
+      }
     }
-     }
 
     let currentPage = 1;
     const CROSSFADE_OVERLAP_MS = 250;
