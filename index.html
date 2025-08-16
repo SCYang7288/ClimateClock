@@ -55,51 +55,43 @@
     }
 
     /* Clock table style - moved to top */
-    .clock-table {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: fixed; /* fixed at top */
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: auto;
-      margin: 0;
-      padding: 10px 0;
-      background-color: black; /* keep same background */
-      z-index: 1000;
-    }
+  .clock-table {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 10px 0;
+  background-color: black;
+  z-index: 1000;
+}
 
-    .clock-row {
-      display: flex;
-      border: 4px solid #00ff00;
-      border-radius: 12px;
-      overflow: hidden;
-      transform: scale(1.2);
-    }
+/* Limit clock row to 50% of screen width */
+.clock-row {
+  display: flex;
+  border: 4px solid #00ff00;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 50%;            /* 🔹 Clock takes up half of screen width */
+}
 
-    .clock-cell {
-      border-right: 4px solid #00ff00;
-      padding: 10px 20px;
-      text-align: center;
-      background-color: rgba(0, 255, 0, 0.05);
-    }
+/* Bigger numbers */
+.time-value {
+  font-size: 25vh;        /* 🔹 Larger font */
+  font-weight: bold;
+  color: red;
+  transition: transform 0.2s;
+}
 
-    .clock-cell:last-child {
-      border-right: none;
-    }
-
-    .time-value {
-      font-size: 20vh;
-      font-weight: bold;
-      color: red;
-      transition: transform 0.2s;
-    }
-
-    .time-label {
-      font-size: 4vh;
-      color: #00ff00;
-    }
+/* Bigger labels */
+.time-label {
+  font-size: 5vh;         /* 🔹 Larger labels */
+  color: #00ff00;
+}
 
     @keyframes blinkEnlarge {
       0%   { color: red; transform: scale(1); }
