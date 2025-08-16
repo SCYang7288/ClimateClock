@@ -336,24 +336,24 @@
      }
 
     let currentPage = 1;
-    const totalPages = 3; // we have page1, page2, page3
-    const pageIds = ["page1", "page2", "page3"];
-    // function to show only the active page
-    function showPage(pageNumber) {
-     pageIds.forEach((id, index) => {
-       const el = document.getElementById(id);
-       if (el) {
-         el.style.display = (index + 1 === pageNumber) ? "block" : "none";
-       }
-     });
-    }
-    // start with page1
-    showPage(currentPage);
-    // rotate every 10 seconds
-    setInterval(() => {
-     currentPage = (currentPage % totalPages) + 1;
-     showPage(currentPage);
-    }, 10000);
+const pages = document.querySelectorAll(".page");
+const totalPages = pages.length;
+function showPage(n) {
+ pages.forEach((p, i) => {
+   if (i === n - 1) {
+     p.classList.add("active");
+   } else {
+     p.classList.remove("active");
+   }
+ });
+}
+// show first page initially
+showPage(currentPage);
+// rotate every 10s
+setInterval(() => {
+ currentPage = (currentPage % totalPages) + 1;
+ showPage(currentPage);
+}, 10000);
 
 function adjustCardPosition() {
   const clock = document.querySelector(".clock-table");
