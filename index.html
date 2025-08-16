@@ -16,82 +16,77 @@
 
     /* Info pages container */
     .explanation-card {
-      max-width: 85%;
-      background-color: rgba(0, 255, 0, 0.08);
-      color: #00ff00;
-      padding: 20px 30px;
-      border-radius: 16px;
-      border: 1px solid #00ff00;
-      font-size: 1.2vw;
-      line-height: 1.6;
-      text-align: left;
-      margin: 200px auto 0 auto; /* shifted down for fixed clock */
-      position: relative;
-      min-height: 380px;
-      overflow: hidden;
-    }
-
-    .page {
-      position: absolute; 
-      top: 20px;
-      left: 20px;
-      right: 20px;
-      bottom: 20px;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-      z-index: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      pointer-events: none;
-      will-change: opacity;
-    }
-
-    .page.active {
-      opacity: 1;
-      z-index: 2;
-      pointer-events: auto;
-    }
-
-    /* Clock table style - moved to top */
-  .clock-table {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: auto;
-  margin: 0;
-  padding: 10px 0;
-  background-color: black;
-  z-index: 1000;
-}
-
-/* Limit clock row to 50% of screen width */
-.clock-row {
-  display: flex;
-  border: 4px solid #00ff00;
-  border-radius: 12px;
-  overflow: hidden;
-  width: 50%;            /* 🔹 Clock takes up half of screen width */
-}
-
-/* Bigger numbers */
-.time-value {
-  font-size: 25vh;        /* 🔹 Larger font */
-  font-weight: bold;
-  color: red;
-  transition: transform 0.2s;
-}
-
-/* Bigger labels */
-.time-label {
-  font-size: 5vh;         /* 🔹 Larger labels */
+  max-width: 85%;
+  background-color: rgba(0, 255, 0, 0.08);
   color: #00ff00;
+  padding: 20px 30px;
+  border-radius: 16px;
+  border: 1px solid #00ff00;
+  font-size: 1.2vw;
+  line-height: 1.6;
+  text-align: left;
+  margin: 20px auto 0 auto;
+  position: relative;
+  min-height: 380px; /* increase height for ze bilingual */
+  overflow: hidden; /* keep both pages same size without scrolling */
 }
+
+.page {
+  position: absolute; 
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* keep centered vertically */
+  align-items: flex-start;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+.page.active {
+  opacity: 1;
+  z-index: 2;
+  pointer-events: auto;
+}
+    /* Clock table style */
+    .clock-table {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 70vh; /* Clock takes 50% of screen height */
+      margin-top: 0;
+    }
+    .clock-row {
+      display: flex;
+      border: 4px solid #00ff00;
+      border-radius: 12px;
+      overflow: hidden;
+      transform: scale(1.2); /* Slightly larger clock */
+    }
+    .clock-cell {
+      border-right: 4px solid #00ff00;
+      padding: 10px 20px;
+      text-align: center;
+      background-color: rgba(0, 255, 0, 0.05);
+    }
+    .clock-cell:last-child {
+      border-right: none;
+    }
+    .time-value {
+      font-size: 20vh; /* Responsive size */
+      font-weight: bold;
+      color: red;
+      transition: transform 0.2s;
+    }
+    .time-label {
+      font-size: 4vh; /* Responsive size */
+      color: #00ff00;
+    }
 
     @keyframes blinkEnlarge {
       0%   { color: red; transform: scale(1); }
@@ -100,7 +95,6 @@
       75%  { color: white; transform: scale(1.3); }
       100% { color: red; transform: scale(1); }
     }
-
     .blink-enlarge {
       animation: blinkEnlarge 0.5s ease;
     }
@@ -114,7 +108,6 @@
       color: #00ff00;
       z-index: 10001;
     }
-
     .ticker-wrapper {
       width: 100%;
       background: #222;
@@ -124,18 +117,15 @@
       padding: 8px 0;
       box-sizing: border-box;
     }
-
     .ticker {
       display: inline-block;
       padding-left: 100%;
       animation: ticker 40s linear infinite;
     }
-
     @keyframes ticker {
       0%   { transform: translateX(0); }
       100% { transform: translateX(-100%); }
     }
-
     .bottom-controls {
       padding: 8px 0;
       display: flex;
@@ -143,7 +133,6 @@
       gap: 10px;
       background: #111;
     }
-
     .sound-controls button {
       background-color: #00ff00;
       color: black;
@@ -153,7 +142,6 @@
       border-radius: 4px;
       cursor: pointer;
     }
-
     .language-select select {
       padding: 6px 10px;
       font-size: 0.9em;
@@ -162,7 +150,7 @@
       background-color: #f1f1f1;
     }
 
-    /* Compact headings */
+    /* Make headings a bit more compact */
     .page h3 { margin: 0 0 8px 0; }
     .page p  { margin: 6px 0; }
   </style>
@@ -286,7 +274,7 @@
         page1: "<h3><strong>气候时钟</strong></h3><p><strong>缘起</strong>：始于 <strong>2020 年 9 月 19 日</strong>，当时它在纽约曼哈顿的 <strong>联合艺术大楼（Metronome）</strong> 上首次公开展示。</p><p><strong>定义</strong>：一个实时倒计时工具，显示全球碳排放预算（将升温控制在<strong>1.5°C</strong>以内）的剩余时间。</p><h3><strong>Climate Clock</strong></h3><p><strong>Origin</strong>: Started on <strong>19 September 2020</strong>, when it was first publicly displayed on the <strong>Metronome</strong> in Manhattan, New York.</p> <p><strong>Definition</strong>: A real-time countdown tool that shows the remaining global carbon budget time to keep warming within <strong>1.5°C</strong>.</p>",
         page2:"<h3><strong>气候时钟</strong></h3><p><strong>计算依据</strong>：基于当前温室气体排放速率和科学模型（如<strong>Intergovernmental Panel on Climate Change (IPCC)</strong>数据）。</p><p><strong>核心信息</strong>：提醒人类必须在时限前实现<strong>净零排放</strong>，否则将面临不可逆的气候灾难。</p><h3><strong>Climate Clock</strong></h3><p><strong>Calculation Basis</strong>: Based on current greenhouse gas emission rates and scientific models (such as <strong>Intergovernmental Panel on Climate Change (IPCC)</strong> data).</p><p><strong>Core Message</strong>: Reminds humanity that we must achieve <strong>net-zero emissions</strong> before the time runs out, or face irreversible climate disasters.</p>"
       },
-   zh: {
+            zh: {
           labels: ["年", "天", "时", "分", "秒"],
           ticker: "🌱 静思语：环保不是口号，而是生活的态度。&emsp;🌿 静思语：人类若不爱护地球，大地将无以为继。",
           page1: "<h3><strong>气候时钟</strong></h3><p><strong>缘起</strong>：始于 2020 年 9 月 19 日，首次于纽约曼哈顿 Metronome 公开展示。</p><p><strong>定义</strong>：一个实时倒数工具，显示全球碳排放预算（将升温控制在 1.5°C 以内）的剩余时间。</p>",
@@ -329,7 +317,15 @@
       ticker.classList.add("ticker");
       document.getElementById("page1").innerHTML = data.page1 || "";
       document.getElementById("page2").innerHTML = data.page2 || "";
+   
+  // 🔹 Dynamic card height based on language
+  const card = document.querySelector(".explanation-card");
+  if (lang === "ze") {
+    card.style.minHeight = "380px"; // taller for bilingual text
+  } else {
+    card.style.minHeight = "240px"; // default for others
     }
+     }
 
     let currentPage = 1;
     const CROSSFADE_OVERLAP_MS = 250;
