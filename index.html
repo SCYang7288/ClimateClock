@@ -353,9 +353,20 @@
       }
     }, 30000);
 
-    document.addEventListener("DOMContentLoaded", () => {
-      changeLanguage();
-    });
+    function adjustCardPosition() {
+  const clock = document.querySelector(".clock-table");
+  const card = document.querySelector(".explanation-card");
+  if (clock && card) {
+    const clockHeight = clock.offsetHeight;
+    card.style.marginTop = (clockHeight + 20) + "px"; // 20px extra spacing
+  }
+}
+
+window.addEventListener("resize", adjustCardPosition);
+document.addEventListener("DOMContentLoaded", () => {
+  changeLanguage();
+  adjustCardPosition();
+});
   </script>
 </body>
 </html>
