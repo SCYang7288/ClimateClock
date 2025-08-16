@@ -27,17 +27,17 @@
   text-align: left;
   position: relative;
   min-height: 380px;
-  overflow: hidden;
+  /*overflow: hidden;*/
   margin:20px auto;
       
 }
 
 .page {
+ position: relative;   /* ✅ no more absolute positioning */
  opacity: 0;
  transition: opacity 1s ease-in-out;
  z-index: 0;
- position: relative;   /* ✅ no more absolute positioning */
- pointer-events: none;
+  pointer-events: none;
 }
 
 .page.active {
