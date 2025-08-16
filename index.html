@@ -15,25 +15,26 @@
     }
 
     /* Info pages container */
-    .explanation-card {
-  max-width: 85%;
-  background-color: rgba(0, 255, 0, 0.08);
-  color: #00ff00;
-  padding: 20px 30px;
-  border-radius: 16px;
-  border: 1px solid #00ff00;
-  font-size: 1.2vw;
-  line-height: 1.6;
-  text-align: left;
-  position: relative;
-  min-height: 380px;
-  /*overflow: hidden;*/
-  margin:20px auto;
-      
-}
+  .explanation-card {
+    max-width: 85%;
+    background-color: rgba(0, 255, 0, 0.08);
+    color: #00ff00;
+    padding: 20px 30px;
+    border-radius: 16px;
+    border: 1px solid #00ff00;
+    font-size: 1.2vw;
+    line-height: 1.6;
+    text-align: left;
+    position: relative;
+    min-height: 380px;
+    overflow: hidden;
+    margin:20px auto;
+        
+  }
 
 .page {
- position: relative;   /* ✅ no more absolute positioning */
+ position: Absolute;   /* ✅ no more absolute positioning */
+ inset :0;
  opacity: 0;
  transition: opacity 1s ease-in-out;
  z-index: 0;
@@ -42,7 +43,7 @@
 
 .page.active {
   opacity: 1;
-  z-index: 2;
+  z-index: 1; /*2*/
   pointer-events: auto;
 }
     /* Clock table style */
