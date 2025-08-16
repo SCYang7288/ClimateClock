@@ -335,17 +335,24 @@
      }
 
     let currentPage = 1;
-    const CROSSFADE_OVERLAP_MS = 250;
+    const totalPages = 3; // we have page1, page2, page3
+    const pageIds = ["page1", "page2", "page3"];
+    // function to show only the active page
+    function showPage(pageNumber) {
+     pageIds.forEach((id, index) => {
+       const el = document.getElementById(id);
+       if (el) {
+         el.style.display = (index + 1 === pageNumber) ? "block" : "none";
+       }
+     });
+    }
+    // start with page1
+    showPage(currentPage);
+    // rotate every 10 seconds
     setInterval(() => {
-     const pages = [document.getElementById("page1"),
-                    document.getElementById("page2"),
-                    document.getElementById("page3")];
-     if (pages.some(p => !p)) return;
-     const nextPage = (currentPage % pages.length) + 1;
-     pages[nextPage - 1].classList.add("active");
-     setTimeout(() => pages[currentPage - 1].classList.remove("active"), CROSSFADE_OVERLAP_MS);
-     currentPage = nextPage;
-    }, 10000); // ✅ 10s per page (3 pages = 30s loop)
+     currentPage = (currentPage % totalPages) + 1;
+     showPage(currentPage);
+    }, 10000);
 
 function adjustCardPosition() {
   const clock = document.querySelector(".clock-table");
