@@ -345,7 +345,7 @@
      pages[nextPage - 1].classList.add("active");
      setTimeout(() => pages[currentPage - 1].classList.remove("active"), CROSSFADE_OVERLAP_MS);
      currentPage = nextPage;
-    }, 30000); // ✅ 10s per page (3 pages = 30s loop)
+    }, 10000); // ✅ 10s per page (3 pages = 30s loop)
 
 function adjustCardPosition() {
   const clock = document.querySelector(".clock-table");
