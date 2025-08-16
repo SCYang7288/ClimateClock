@@ -33,20 +33,11 @@
 }
 
 .page {
-  position: absolute; 
-  top: 5px;
-  left: 20px;
-  right: 20px;
-  bottom: 20px;
-  opacity: 0;
-  transition: opacity 1s ease-in-out;
-  z-index: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center; /* keep centered vertically */
-  align-items: flex-start;
-  pointer-events: none;
-  will-change: opacity;
+ opacity: 0;
+ transition: opacity 1s ease-in-out;
+ z-index: 0;
+ position: relative;   /* ✅ no more absolute positioning */
+ pointer-events: none;
 }
 
 .page.active {
