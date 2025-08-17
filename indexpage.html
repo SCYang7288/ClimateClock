@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Video + Headline Ticker + Climate Clock</title>
+<style>
+  :root{
+    --ui-bg: rgba(0,0,0,0.65);
+    --ui-text: #fff;
+    --accent: #39ff88;
+    --ticker-speed: 22s;
+    --clock-scale: 1;
+  }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: #000;
+    color: var(--ui-text);
+    font-family: system-ui, sans-serif;
+  }
+
+  .stage {
+    position: relative;
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+
+  .video-wrap {
+    position: relative;
+    display: grid;
+    place-items: center;
+    max-width: 80vw;
+    max-height: 80vh;
+    width: 80vw;
+    aspect-ratio: 16/9;
+    background: #111;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    overflow: hidden;
+  }
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #000;
+    pointer-events: none; /* allow overlay click */
+  }
+
+  .play-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 9999;
+    pointer-events: auto;
+    cursor: pointer;
+  }
+
+  .play-button {
+    width: 80px;
+    height: 80px;
+    background: rgba(0,255,0,0.85);
+    border-radius: 50%;
+    clip-path: polygon(30% 20%, 75% 50%, 30% 80%);
+  }
+
+  /* Climate Clock */
+  .clock {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    background: var(--ui-bg);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    padding: 0.55rem 0.75rem;
+    transform: scale(var(--clock-scale));
+    transform-origin: top left;
+    line-height: 1.15;
+    user-select: none;
+    z-index: 10000;
+  }
+  .clock .label { font-size: 0.75rem; opacity: 0.9; }
+  .clock .value {
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: .02em;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .clock .units { font-size: 0.7rem; opacity: 0.85; }
+
+  /* Ticker */
+  .ticker {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--ui-bg);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border-top: 1px solid rgba(255,255,255,0.2);
+    height: 48px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    z-index: 10000;
+  }
+  .ticker__track {
+    display: inline-block;
+    white-space: nowrap;
+    will-change: transform;
+    animation: scroll var(--ticker-speed) linear infinite;
+    padding-left: 100%;
+  }
+  .ticker__text {
+    display: inline-block;
+    padding: 0 2rem;
+    font-weight: 600;
+    letter-spacing: .02em;
+    font-variant-numeric: tabular-nums;
+  }
+  @keyframes scroll {
+    0%   { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+  }
+</style>
+</head>
+<body>
+
+<!-- Climate Clock -->
+<div class="clock">
+  <div class="label" id="clock-label">Climate Clock to 1.5°C budget</div>
+  <div class="value" id="clock-value">--:--:--</div>
+  <div class="units" id="clock-units">Years · Days · Hrs : Min : Sec</div>
+</div>
+
+<!-- Video -->
+<main class="stage">
+  <div class="video-wrap">
+   <iframe 
+    src="https://www.youtube.com/embed/K8Vj5cDptDE?autoplay=1&mute=1&loop=1&playlist=K8Vj5cDptDE&controls=0&modestbranding=1&rel=0"
+    allow="autoplay; fullscreen; encrypted-media"
+    allowfullscreen>
+  </iframe>
+
+  </div>
+</main>
+
+<!-- Ticker -->
+<div class="ticker">
+  <div class="ticker__track" id="ticker-track">
+    <span class="ticker__text" id="ticker-text">
+      Breaking: Example headline goes here · Add your own message · Support climate action now ·
+    </span>
+    <span class="ticker__text">
+      Breaking: Example headline goes here · Add your own message · Support climate action now ·
+    </span>
+  </div>
+</div>
+
+<script>
+/* Config */
+const TARGET_DATE = new Date('2035-01-01T00:00:00Z');
+const CLOCK_UPDATE_MS = 250;
+const TICKER_MESSAGE = 'Breaking: Example headline goes here · Add your own message · Support climate action now · ';
+
+/* Set ticker */
+const tickerTrack = document.getElementById('ticker-track');
+document.getElementById('ticker-text').textContent = TICKER_MESSAGE;
+
+/* Clock logic */
+const clockValueEl = document.getElementById('clock-value');
+function formatClock(msRemaining) {
+  if (msRemaining <= 0) return '0y 000d 00:00:00';
+  const sec = Math.floor(msRemaining / 1000);
+  const years = Math.floor(sec / (365.2425 * 24 * 3600));
+  let rem = sec - Math.floor(years * 365.2425 * 24 * 3600);
+  const days = Math.floor(rem / (24 * 3600)); rem -= days * 24 * 3600;
+  const hours = Math.floor(rem / 3600); rem -= hours * 3600;
+  const minutes = Math.floor(rem / 60); rem -= minutes * 60;
+  const seconds = rem;
+  const pad = n => String(n).padStart(2, '0');
+  const padDays = n => String(n).padStart(3, '0');
+  return `${years}y ${padDays(days)}d ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+}
+function tickClock() {
+  clockValueEl.textContent = formatClock(TARGET_DATE - new Date());
+}
+tickClock();
+setInterval(tickClock, CLOCK_UPDATE_MS);
+
+/* Video Play */
+const video = document.getElementById('mainVideo');
+const overlay = document.getElementById('playOverlay');
+overlay.addEventListener('click', () => {
+  overlay.style.display = 'none';
+  video.muted = false;
+  video.play();
+});
+</script>
+
+</body>
+</html>
