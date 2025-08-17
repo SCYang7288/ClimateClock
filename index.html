@@ -368,6 +368,20 @@ window.addEventListener("resize", adjustCardPosition);
 document.addEventListener("DOMContentLoaded", () => {
   changeLanguage();
   adjustCardPosition();
+  // Try to start ticking immediately
+  startTick();
+
+  // If browser blocks autoplay, enable ticking on first interaction
+  const enableOnClick = () => {
+    startTick();
+    document.removeEventListener("click", enableOnClick);
+    document.removeEventListener("keydown", enableOnClick);
+    document.removeEventListener("touchstart", enableOnClick);
+  };
+
+  document.addEventListener("click", enableOnClick, { once: true });
+  document.addEventListener("keydown", enableOnClick, { once: true });
+  document.addEventListener("touchstart", enableOnClick, { once: true });
 });
   </script>
 </body>
