@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Video + Headline Ticker + Climate Clock</title>
+<title>Fullscreen Video + Climate Clock + Headline Ticker</title>
 <style>
   :root{
     --ui-bg: rgba(0,0,0,0.65);
     --ui-text: #fff;
     --accent: #39ff88;
     --ticker-speed: 22s;
-    --clock-scale: 1;
+    --clock-scale: 1.1;
   }
 
   html, body {
@@ -19,61 +19,26 @@
     background: #000;
     color: var(--ui-text);
     font-family: system-ui, sans-serif;
-  }
-
-  .stage {
-    position: relative;
-    min-height: 100vh;
-    display: grid;
-    place-items: center;
     overflow: hidden;
   }
 
+  /* Video fullscreen background */
   .video-wrap {
-    position: relative;
-    display: grid;
-    place-items: center;
-    max-width: 80vw;
-    max-height: 80vh;
-    width: 80vw;
-    aspect-ratio: 16/9;
-    background: #111;
-    border-radius: 8px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
     overflow: hidden;
+    z-index: 0;
   }
 
-  video {
+  .video-wrap iframe {
     width: 100%;
     height: 100%;
-    object-fit: contain;
-    background: #000;
-    pointer-events: none; /* allow overlay click */
+    border: none;
   }
 
-  .play-overlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,0.35);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
-    z-index: 9999;
-    pointer-events: auto;
-    cursor: pointer;
-  }
-
-  .play-button {
-    width: 80px;
-    height: 80px;
-    background: rgba(0,255,0,0.85);
-    border-radius: 50%;
-    clip-path: polygon(30% 20%, 75% 50%, 30% 80%);
-  }
-
-  /* Climate Clock */
+  /* Climate Clock overlay */
   .clock {
     position: fixed;
     top: 1rem;
@@ -83,18 +48,18 @@
     -webkit-backdrop-filter: blur(6px);
     border: 1px solid rgba(255,255,255,0.2);
     border-radius: 10px;
-    padding: 0.55rem 0.75rem;
+    padding: 0.6rem 0.9rem;
     transform: scale(var(--clock-scale));
     transform-origin: top left;
-    line-height: 1.15;
+    line-height: 1.2;
     user-select: none;
-    z-index: 10000;
+    z-index: 10;
   }
-  .clock .label { font-size: 0.75rem; opacity: 0.9; }
+  .clock .label { font-size: 0.8rem; opacity: 0.9; }
   .clock .value {
     font-variant-numeric: tabular-nums;
     font-weight: 700;
-    font-size: 1.05rem;
+    font-size: 1.15rem;
     letter-spacing: .02em;
     color: var(--accent);
     white-space: nowrap;
@@ -115,7 +80,7 @@
     display: flex;
     align-items: center;
     overflow: hidden;
-    z-index: 10000;
+    z-index: 10;
   }
   .ticker__track {
     display: inline-block;
@@ -139,6 +104,15 @@
 </head>
 <body>
 
+<!-- Fullscreen Video -->
+<div class="video-wrap">
+  <iframe 
+    src="https://www.youtube.com/embed/K8Vj5cDptDE?autoplay=1&mute=1&loop=1&playlist=K8Vj5cDptDE&controls=0&modestbranding=1&rel=0"
+    allow="autoplay; fullscreen; encrypted-media"
+    allowfullscreen>
+  </iframe>
+</div>
+
 <!-- Climate Clock -->
 <div class="clock">
   <div class="label" id="clock-label">Climate Clock to 1.5°C budget</div>
@@ -146,39 +120,22 @@
   <div class="units" id="clock-units">Years · Days · Hrs : Min : Sec</div>
 </div>
 
-<!-- Video -->
-<main class="stage">
-  <div class="video-wrap">
-   <iframe 
-    src="https://www.youtube.com/embed/K8Vj5cDptDE?autoplay=1&mute=1&loop=1&playlist=K8Vj5cDptDE&controls=1&modestbranding=1&rel=0"
-    allow="autoplay; fullscreen; encrypted-media"
-    allowfullscreen>
-  </iframe>
-
-  </div>
-</main>
-
 <!-- Ticker -->
 <div class="ticker">
   <div class="ticker__track" id="ticker-track">
     <span class="ticker__text" id="ticker-text">
-        Climate Time 1.5°C: Refers to the goal of keeping the global average temperature rise to no more than 1.5°C above pre-industrial levels (1850–1900). This is a key commitment of the Paris Agreement, aimed at reducing greenhouse gas emissions and avoiding the most severe impacts of climate change. 
+      Climate Time 1.5°C: Keep global warming below <strong>1.5°C</strong> to avoid severe impacts. Act now for a sustainable future!
     </span>
     <span class="ticker__text">
-      The Intergovernmental Panel on Climate Change (IPCC) warns that exceeding 1.5°C will greatly increase the risks of extreme weather, sea level rise, and ecosystem collapse. The global temperature has already risen by about 1.1°C, and if emissions are not reduced, it is expected to exceed this threshold between 2030 and 2035.
+      IPCC warns: crossing 1.5°C means extreme weather, rising seas, and ecosystem collapse. Time is running out.
     </span>
   </div>
 </div>
 
 <script>
 /* Config */
-const TARGET_DATE = new Date(Date.UTC(2029, 6, 21, 16, 0, 0));
+const TARGET_DATE = new Date(Date.UTC(2029, 6, 21, 16, 0, 0)); // adjust your deadline here
 const CLOCK_UPDATE_MS = 250;
-const TICKER_MESSAGE = 'Climate Time 1.5°C: Refers to the goal of keeping the global average temperature rise to no more than 1.5°C above pre-industrial levels (1850–1900). This is a key commitment of the Paris Agreement, aimed at reducing greenhouse gas emissions and avoiding the most severe impacts of climate change';
-
-/* Set ticker */
-const tickerTrack = document.getElementById('ticker-track');
-document.getElementById('ticker-text').textContent = TICKER_MESSAGE;
 
 /* Clock logic */
 const clockValueEl = document.getElementById('clock-value');
@@ -200,15 +157,6 @@ function tickClock() {
 }
 tickClock();
 setInterval(tickClock, CLOCK_UPDATE_MS);
-
-/* Video Play */
-const video = document.getElementById('mainVideo');
-const overlay = document.getElementById('playOverlay');
-overlay.addEventListener('click', () => {
-  overlay.style.display = 'none';
-  video.muted = false;
-  video.play();
-});
 </script>
 
 </body>
