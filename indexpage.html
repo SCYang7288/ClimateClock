@@ -3,58 +3,64 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Climate Clock with Video</title>
+<title>Fullscreen Video + Climate Clock + Headline Ticker</title>
 <style>
-  :root {
+  :root{
     --ui-bg: rgba(0,0,0,0.65);
     --ui-text: #fff;
     --accent: #39ff88;
     --ticker-speed: 22s;
+    --clock-scale: 1.1;
   }
 
   html, body {
-    margin: 0;
     height: 100%;
+    margin: 0;
     background: #000;
     color: var(--ui-text);
     font-family: system-ui, sans-serif;
     overflow: hidden;
   }
 
-  /* Fullscreen video container */
+  /* Video fullscreen background */
   .video-wrap {
     position: fixed;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    background: #000;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
     z-index: 0;
   }
 
-  iframe {
+  .video-wrap iframe {
     width: 100%;
     height: 100%;
     border: none;
   }
 
-  /* Climate Clock */
+  /* Climate Clock overlay */
   .clock {
     position: fixed;
     top: 1rem;
     left: 1rem;
     background: var(--ui-bg);
     backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     border: 1px solid rgba(255,255,255,0.2);
     border-radius: 10px;
-    padding: 0.55rem 0.75rem;
+    padding: 0.6rem 0.9rem;
+    transform: scale(var(--clock-scale));
+    transform-origin: top left;
     line-height: 1.2;
+    user-select: none;
     z-index: 10;
   }
-  .clock .label { font-size: 0.75rem; opacity: 0.9; }
+  .clock .label { font-size: 0.8rem; opacity: 0.9; }
   .clock .value {
     font-variant-numeric: tabular-nums;
     font-weight: 700;
-    font-size: 1.05rem;
+    font-size: 1.15rem;
+    letter-spacing: .02em;
     color: var(--accent);
     white-space: nowrap;
   }
@@ -68,6 +74,7 @@
     bottom: 0;
     background: var(--ui-bg);
     backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     border-top: 1px solid rgba(255,255,255,0.2);
     height: 48px;
     display: flex;
@@ -78,6 +85,7 @@
   .ticker__track {
     display: inline-block;
     white-space: nowrap;
+    will-change: transform;
     animation: scroll var(--ticker-speed) linear infinite;
     padding-left: 100%;
   }
@@ -86,115 +94,84 @@
     padding: 0 2rem;
     font-weight: 600;
     letter-spacing: .02em;
+    font-variant-numeric: tabular-nums;
   }
   @keyframes scroll {
     0%   { transform: translateX(0%); }
     100% { transform: translateX(-100%); }
   }
-
-  /* Sound Button */
-  #soundBtn {
-    position: fixed;
-    bottom: 60px;
-    right: 20px;
-    background: #39ff88;
-    color: #000;
-    font-weight: bold;
-    border: none;
-    border-radius: 6px;
-    padding: 10px 16px;
-    cursor: pointer;
-    z-index: 20;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  }
 </style>
 </head>
 <body>
 
+<!-- Fullscreen Video -->
+<div class="video-wrap">
+  <iframe 
+    src="https://www.youtube.com/embed/K8Vj5cDptDE?autoplay=1&mute=1&loop=1&playlist=K8Vj5cDptDE&controls=0&modestbranding=1&rel=0"
+    allow="autoplay; fullscreen; encrypted-media"
+    allowfullscreen>
+  </iframe>
+</div>
+
 <!-- Climate Clock -->
 <div class="clock">
   <div class="label">Climate Clock to 1.5°C budget</div>
-  <div class="value" id="clock-value">--:--:--</div>
+  <div class="value">
+    <span id="yy">00</span>y 
+    <span id="dd">000</span>d 
+    <span id="hh">00</span>:
+    <span id="mm">00</span>:
+    <span id="ss">00</span>
+  </div>
   <div class="units">Years · Days · Hrs : Min : Sec</div>
 </div>
 
-<!-- Video -->
-<div class="video-wrap">
-  <div id="player"></div>
-</div>
-
-<!-- Enable Sound Button -->
-<button id="soundBtn">🔊 Enable Sound</button>
-
 <!-- Ticker -->
 <div class="ticker">
-  <div class="ticker__track">
+  <div class="ticker__track" id="ticker-track">
     <span class="ticker__text">
-      🌍 Climate Time 1.5°C: Limit global warming to 1.5°C to avoid severe climate risks. Act now!
+      Climate Time 1.5°C: Keep global warming below <strong>1.5°C</strong> to avoid severe impacts. Act now for a sustainable future!
     </span>
     <span class="ticker__text">
-      📢 IPCC warns: exceeding 1.5°C means more extreme weather, sea level rise, and ecosystem collapse.
+      IPCC warns: crossing 1.5°C means extreme weather, rising seas, and ecosystem collapse. Time is running out.
     </span>
   </div>
 </div>
 
 <script>
-/* Climate Clock */
-const TARGET_DATE = new Date(Date.UTC(2029, 6, 21, 16, 0, 0));
-const clockValueEl = document.getElementById('clock-value');
-function formatClock(msRemaining) {
-  if (msRemaining <= 0) return '0y 000d 00:00:00';
-  const sec = Math.floor(msRemaining / 1000);
-  const years = Math.floor(sec / (365.2425 * 24 * 3600));
-  let rem = sec - Math.floor(years * 365.2425 * 24 * 3600);
-  const days = Math.floor(rem / (24 * 3600)); rem -= days * 24 * 3600;
-  const hours = Math.floor(rem / 3600); rem -= hours * 3600;
-  const minutes = Math.floor(rem / 60); rem -= minutes * 60;
-  const seconds = rem;
-  const pad = n => String(n).padStart(2, '0');
-  const padDays = n => String(n).padStart(3, '0');
-  return `${years}y ${padDays(days)}d ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-}
-function tickClock() {
-  clockValueEl.textContent = formatClock(TARGET_DATE - new Date());
-}
-tickClock();
-setInterval(tickClock, 250);
+/* Countdown Config */
+const deadlineUTC = new Date(Date.UTC(2029, 6, 21, 16, 0, 0));
+let prevValues = { yy:null, dd:null, hh:null, mm:null, ss:null };
 
-/* YouTube API */
-let player;
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player('player', {
-    videoId: 'K8Vj5cDptDE', // replace with your video ID
-    playerVars: {
-      autoplay: 1,
-      mute: 1,
-      loop: 1,
-      playlist: 'K8Vj5cDptDE',
-      controls: 0,
-      modestbranding: 1,
-      rel: 0,
-    },
-    events: { 'onReady': onPlayerReady }
-  });
-}
-function onPlayerReady() {
-  player.playVideo();
-}
+function updateClock() {
+  const now = new Date();
+  const timeRemaining = deadlineUTC - now;
+  if (timeRemaining <= 0) return;
 
-/* Enable Sound Button */
-document.getElementById('soundBtn').addEventListener('click', () => {
-  if (player) {
-    player.unMute();
-    player.setVolume(100);
-    document.getElementById('soundBtn').style.display = 'none';
+  const format = n => String(n).padStart(2, '0');
+  const formatDays = n => String(n).padStart(3, '0');
+
+  const values = {
+    yy: format(Math.floor(timeRemaining / (1000 * 60 * 60 * 24 * 365))),
+    dd: formatDays(Math.floor((timeRemaining / (1000 * 60 * 60 * 24)) % 365)),
+    hh: format(Math.floor((timeRemaining / (1000 * 60 * 60)) % 24)),
+    mm: format(Math.floor((timeRemaining / (1000 * 60)) % 60)),
+    ss: format(Math.floor((timeRemaining / 1000) % 60))
+  };
+
+  for (let id in values) {
+    const elem = document.getElementById(id);
+    if (prevValues[id] !== values[id]) {
+      elem.textContent = values[id];
+    }
+    prevValues[id] = values[id];
   }
-});
 
-/* Load YT API */
-const tag = document.createElement('script');
-tag.src = "https://www.youtube.com/iframe_api";
-document.body.appendChild(tag);
+  const nextTick = 1000 - now.getMilliseconds();
+  setTimeout(updateClock, nextTick);
+}
+
+updateClock();
 </script>
 
 </body>
