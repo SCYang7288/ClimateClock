@@ -100,17 +100,35 @@
     0%   { transform: translateX(0%); }
     100% { transform: translateX(-100%); }
   }
+
+  /* Sound buttons */
+  .sound-controls {
+    position: fixed;
+    bottom: 60px;
+    right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 20;
+  }
+  .sound-controls button {
+    background: var(--ui-bg);
+    color: var(--ui-text);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 5px;
+    padding: 0.4rem 0.6rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  .sound-controls button:hover {
+    background: rgba(255,255,255,0.2);
+  }
 </style>
 </head>
 <body>
 
 <!-- Fullscreen Video -->
 <div class="video-wrap">
-  <iframe 
-    src="https://www.youtube.com/embed/K8Vj5cDptDE?autoplay=1&mute=1&loop=1&playlist=K8Vj5cDptDE&controls=0&modestbranding=1&rel=0"
-    allow="autoplay; fullscreen; encrypted-media"
-    allowfullscreen>
-  </iframe>
+  <div id="player"></div>
 </div>
 
 <!-- Climate Clock -->
@@ -138,7 +156,40 @@
   </div>
 </div>
 
+<!-- Sound Controls -->
+<div class="sound-controls">
+  <button onclick="unmuteVideo()">🔊 Sound On</button>
+  <button onclick="muteVideo()">🔇 Sound Off</button>
+</div>
+
 <script>
+/* YouTube API Setup */
+let player;
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('player', {
+    videoId: 'K8Vj5cDptDE',
+    playerVars: {
+      autoplay: 1,
+      mute: 1,      // start muted
+      loop: 1,
+      playlist: 'K8Vj5cDptDE',
+      controls: 0,
+      modestbranding: 1,
+      rel: 0
+    },
+    events: {
+      onReady: e => e.target.playVideo()
+    }
+  });
+}
+function muteVideo() { if (player) player.mute(); }
+function unmuteVideo() { if (player) player.unMute(); }
+
+/* Load YouTube IFrame API */
+let tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+document.body.appendChild(tag);
+
 /* Countdown Config */
 const deadlineUTC = new Date(Date.UTC(2029, 6, 21, 16, 0, 0));
 let prevValues = { yy:null, dd:null, hh:null, mm:null, ss:null };
@@ -146,7 +197,14 @@ let prevValues = { yy:null, dd:null, hh:null, mm:null, ss:null };
 function updateClock() {
   const now = new Date();
   const timeRemaining = deadlineUTC - now;
-  if (timeRemaining <= 0) return;
+  if (timeRemaining <= 0) {
+    document.getElementById("yy").textContent = "00";
+    document.getElementById("dd").textContent = "000";
+    document.getElementById("hh").textContent = "00";
+    document.getElementById("mm").textContent = "00";
+    document.getElementById("ss").textContent = "00";
+    return;
+  }
 
   const format = n => String(n).padStart(2, '0');
   const formatDays = n => String(n).padStart(3, '0');
@@ -170,7 +228,6 @@ function updateClock() {
   const nextTick = 1000 - now.getMilliseconds();
   setTimeout(updateClock, nextTick);
 }
-
 updateClock();
 </script>
 
