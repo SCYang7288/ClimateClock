@@ -3,64 +3,58 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Fullscreen Video + Climate Clock + Headline Ticker</title>
+<title>Climate Clock with Video</title>
 <style>
-  :root{
+  :root {
     --ui-bg: rgba(0,0,0,0.65);
     --ui-text: #fff;
     --accent: #39ff88;
     --ticker-speed: 22s;
-    --clock-scale: 1.1;
   }
 
   html, body {
-    height: 100%;
     margin: 0;
+    height: 100%;
     background: #000;
     color: var(--ui-text);
     font-family: system-ui, sans-serif;
     overflow: hidden;
   }
 
-  /* Video fullscreen background */
+  /* Fullscreen video container */
   .video-wrap {
     position: fixed;
-    top: 0; left: 0;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
     z-index: 0;
   }
 
-  .video-wrap iframe {
+  iframe {
     width: 100%;
     height: 100%;
     border: none;
   }
 
-  /* Climate Clock overlay */
+  /* Climate Clock */
   .clock {
     position: fixed;
     top: 1rem;
     left: 1rem;
     background: var(--ui-bg);
     backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
     border: 1px solid rgba(255,255,255,0.2);
     border-radius: 10px;
-    padding: 0.6rem 0.9rem;
-    transform: scale(var(--clock-scale));
-    transform-origin: top left;
+    padding: 0.55rem 0.75rem;
     line-height: 1.2;
-    user-select: none;
     z-index: 10;
   }
-  .clock .label { font-size: 0.8rem; opacity: 0.9; }
+  .clock .label { font-size: 0.75rem; opacity: 0.9; }
   .clock .value {
     font-variant-numeric: tabular-nums;
     font-weight: 700;
-    font-size: 1.15rem;
-    letter-spacing: .02em;
+    font-size: 1.05rem;
     color: var(--accent);
     white-space: nowrap;
   }
@@ -74,7 +68,6 @@
     bottom: 0;
     background: var(--ui-bg);
     backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
     border-top: 1px solid rgba(255,255,255,0.2);
     height: 48px;
     display: flex;
@@ -85,7 +78,6 @@
   .ticker__track {
     display: inline-block;
     white-space: nowrap;
-    will-change: transform;
     animation: scroll var(--ticker-speed) linear infinite;
     padding-left: 100%;
   }
@@ -94,50 +86,61 @@
     padding: 0 2rem;
     font-weight: 600;
     letter-spacing: .02em;
-    font-variant-numeric: tabular-nums;
   }
   @keyframes scroll {
     0%   { transform: translateX(0%); }
     100% { transform: translateX(-100%); }
   }
+
+  /* Sound Button */
+  #soundBtn {
+    position: fixed;
+    bottom: 60px;
+    right: 20px;
+    background: #39ff88;
+    color: #000;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    padding: 10px 16px;
+    cursor: pointer;
+    z-index: 20;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
 </style>
 </head>
 <body>
 
-<!-- Fullscreen Video -->
-<div class="video-wrap">
-  <iframe 
-    src="https://www.youtube.com/embed/K8Vj5cDptDE?autoplay=1&mute=1&loop=1&playlist=K8Vj5cDptDE&controls=1&modestbranding=1&rel=0"
-    allow="autoplay; fullscreen; encrypted-media"
-    allowfullscreen>
-  </iframe>
-</div>
-
 <!-- Climate Clock -->
 <div class="clock">
-  <div class="label" id="clock-label">Climate Clock to 1.5°C budget</div>
+  <div class="label">Climate Clock to 1.5°C budget</div>
   <div class="value" id="clock-value">--:--:--</div>
-  <div class="units" id="clock-units">Years · Days · Hrs : Min : Sec</div>
+  <div class="units">Years · Days · Hrs : Min : Sec</div>
 </div>
+
+<!-- Video -->
+<div class="video-wrap">
+  <div id="player"></div>
+</div>
+
+<!-- Enable Sound Button -->
+<button id="soundBtn">🔊 Enable Sound</button>
 
 <!-- Ticker -->
 <div class="ticker">
-  <div class="ticker__track" id="ticker-track">
-    <span class="ticker__text" id="ticker-text">
-      Climate Time 1.5°C: Keep global warming below <strong>1.5°C</strong> to avoid severe impacts. Act now for a sustainable future!
+  <div class="ticker__track">
+    <span class="ticker__text">
+      🌍 Climate Time 1.5°C: Limit global warming to 1.5°C to avoid severe climate risks. Act now!
     </span>
     <span class="ticker__text">
-      IPCC warns: crossing 1.5°C means extreme weather, rising seas, and ecosystem collapse. Time is running out.
+      📢 IPCC warns: exceeding 1.5°C means more extreme weather, sea level rise, and ecosystem collapse.
     </span>
   </div>
 </div>
 
 <script>
-/* Config */
-const TARGET_DATE = new Date(Date.UTC(2029, 6, 21, 16, 0, 0)); // adjust your deadline here
-const CLOCK_UPDATE_MS = 250;
-
-/* Clock logic */
+/* Climate Clock */
+const TARGET_DATE = new Date(Date.UTC(2029, 6, 21, 16, 0, 0));
 const clockValueEl = document.getElementById('clock-value');
 function formatClock(msRemaining) {
   if (msRemaining <= 0) return '0y 000d 00:00:00';
@@ -156,7 +159,42 @@ function tickClock() {
   clockValueEl.textContent = formatClock(TARGET_DATE - new Date());
 }
 tickClock();
-setInterval(tickClock, CLOCK_UPDATE_MS);
+setInterval(tickClock, 250);
+
+/* YouTube API */
+let player;
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('player', {
+    videoId: 'K8Vj5cDptDE', // replace with your video ID
+    playerVars: {
+      autoplay: 1,
+      mute: 1,
+      loop: 1,
+      playlist: 'K8Vj5cDptDE',
+      controls: 0,
+      modestbranding: 1,
+      rel: 0,
+    },
+    events: { 'onReady': onPlayerReady }
+  });
+}
+function onPlayerReady() {
+  player.playVideo();
+}
+
+/* Enable Sound Button */
+document.getElementById('soundBtn').addEventListener('click', () => {
+  if (player) {
+    player.unMute();
+    player.setVolume(100);
+    document.getElementById('soundBtn').style.display = 'none';
+  }
+});
+
+/* Load YT API */
+const tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+document.body.appendChild(tag);
 </script>
 
 </body>
